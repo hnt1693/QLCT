@@ -4,14 +4,14 @@ import {IconCheck, IconLocation, IconNotification} from "@arco-design/web-react/
 import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 import './header.css'
 import * as PropTypes from "prop-types";
-import {JP, EU, VN} from 'country-flag-icons/react/3x2'
+import {JP, GB, VN} from 'country-flag-icons/react/3x2'
 import {emitLocaleEvent} from "../common/event";
 
 HeaderLayout.propTypes = {};
 
 const locales = [
     {key: "vn", value: "Vietnamese", icon: <VN className={"ac"} style={{height: 12}}/>},
-    {key: "en", value: "English", icon: <EU className={"ac"} style={{height: 12}}/>},
+    {key: "en", value: "English", icon: <GB className={"ac"} style={{height: 12}}/>},
     {key: "jp", value: "Japanese", icon: <JP className={"ac"} style={{height: 12}}/>},
 ]
 const IconFont = Icon.addFromIconFontCn({src: '//at.alicdn.com/t/font_180975_ue66sq60vyd.js'});
