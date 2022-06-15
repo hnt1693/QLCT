@@ -1,11 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Badge, Button, Dropdown, Empty, Icon, Menu, PageHeader, Popover, Space} from "@arco-design/web-react";
-import {IconCheck, IconLocation, IconNotification} from "@arco-design/web-react/icon";
+import {IconNotification} from "@arco-design/web-react/icon";
 import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 import './header.css'
-import * as PropTypes from "prop-types";
-import {JP, GB, VN} from 'country-flag-icons/react/3x2'
+import {GB, JP, VN} from 'country-flag-icons/react/3x2'
 import {emitLocaleEvent} from "../common/event";
+import {useDispatch, useSelector} from "react-redux";
+import {setLocale} from "../redux/config-provider-slice";
 
 HeaderLayout.propTypes = {};
 
@@ -18,7 +19,8 @@ const IconFont = Icon.addFromIconFontCn({src: '//at.alicdn.com/t/font_180975_ue6
 
 function HeaderLayout(props) {
 
-    const [locale, setLocale] = useState(locales[0].key);
+    const locale = useSelector(state => state.configProvider.locale)
+    const dispatch = useDispatch();
     const languageMenuRef = useRef();
     const content = <div style={{width: 300}}><Empty/></div>;
 
@@ -26,7 +28,7 @@ function HeaderLayout(props) {
 
     const handleLocaleChange = (e) => {
         emitLocaleEvent(e)
-        setLocale(e);
+        dispatch(setLocale(e));
         languageMenuRef.current.click();
     }
 
@@ -53,7 +55,7 @@ function HeaderLayout(props) {
             subTitle='This is a description'
             extra={
                 <div className={'header-container'}>
-                    <Space size={"small"}>
+                    <Space size={"default"}>
                         <Popover position='br' title='Notifications' content={content} trigger={'click'}>
                             <Badge count={9} dot dotStyle={{width: 10, height: 10}}>
                                 <Button type='default' shape='circle' icon={<IconNotification fontSize={20}/>}/>
@@ -65,9 +67,10 @@ function HeaderLayout(props) {
                             >{locales.find(l => l.key === locale).icon}</Button>
                         </Popover>
 
-                        <Dropdown droplist={languageMenu} trigger='click' position='br'>
+                        <Popover position='br' content={userMenu} trigger={'click'}>
                             <Avatar style={{cursor: "pointer"}}>AVT</Avatar>
-                        </Dropdown>
+                        </Popover>
+
                     </Space>
                 </div>
             }
