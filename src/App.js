@@ -1,16 +1,16 @@
 import './App.css';
-import {ConfigProvider, Layout, Menu, Message, Pagination} from "@arco-design/web-react";
+import {ConfigProvider, Layout, Menu, Message} from "@arco-design/web-react";
 import {IconCalendar, IconCaretLeft, IconCaretRight, IconHome} from '@arco-design/web-react/icon';
 import React, {useEffect, useState} from "react";
 import FooterLayout from "./layout/footer";
 import HeaderLayout from "./layout/header";
-import {initLocaleEvent} from "./common/event";
-import {Provider, useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import vn from "@arco-design/web-react/es/locale/vi-VN";
 import jp from "@arco-design/web-react/es/locale/ja-JP";
 import en from "@arco-design/web-react/es/locale/en-US";
-import Radio from "@arco-design/web-react/es/Radio";
-import {setSize} from "./redux/config-provider-slice";
+import {Route, Routes} from 'react-router-dom'
+import Login from "./components/login";
+import Dashboard from "./components/dashboard";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -18,17 +18,24 @@ const Sider = Layout.Sider;
 const Header = Layout.Header;
 const Footer = Layout.Footer;
 const Content = Layout.Content;
-const RadioGroup = Radio.Group
 const localeObject = {
     vn: vn,
     en: en,
     jp: jp
 }
 
+const routes = [
+    {key: 0, title: "Dashboard", icon: null, child: []},
+    {key: 1, title: "Dashboard", icon: null, child: []},
+    {key: 2, title: "Dashboard", icon: null, child: []},
+
+
+]
+
 function App() {
     const [collapsed, setCollapsed] = useState(false);
     const configProvider = useSelector(state => state.configProvider);
-    const dispatch  = useDispatch();
+    const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.currentUser)
     const handleCollapsed = () => {
         setCollapsed(!collapsed);
@@ -43,25 +50,26 @@ function App() {
         <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size}>
             <Layout className='main-layout'>
                 <Header>
-                    <HeaderLayout/>
+                    <div className={"header-container"}>
+                        <HeaderLayout/>
+                    </div>
                 </Header>
                 <Layout>
                     <Sider collapsed={collapsed}
                            onCollapse={handleCollapsed}
                            collapsible
                            trigger={collapsed ? <IconCaretRight/> : <IconCaretLeft/>} breakpoint='xl'
-                           width={350}>
-                        <div className='logo'/>
+                           width={320}>
+                        {/*<div className='logo'/>*/}
                         <Menu
                             defaultOpenKeys={['1']}
                             defaultSelectedKeys={['0_3']}
                             onClickMenuItem={(key) =>
                                 Message.info({content: `You select ${key}`, showIcon: true})
                             }
-
                             style={{width: '100%'}}
                         >
-                            <MenuItem key='0_1' disabled>
+                            <MenuItem key='0_1'>
                                 <IconHome/>
                                 Menu 1
                             </MenuItem>
@@ -112,27 +120,12 @@ function App() {
 
                     <Layout>
                         <Content>
-                            <Pagination
-                                total={200}
-                                showTotal
-                                sizeCanChange
-                                style={{marginBottom: 20, marginRight: 40, minWidth: 550}}
-                            />
-
-                            <RadioGroup
-                                type='button'
-                                name='lang'
-                                defaultValue='Guangzhou'
-                                style={{marginRight: 20, marginBottom: 20}}
-                                onChange={value => dispatch(setSize(value))}
-                            >
-                                <Radio value='mini'>Beijing</Radio>
-                                <Radio value='tiny'>Shanghai</Radio>
-                                <Radio value='default'>
-                                    Guangzhou
-                                </Radio>
-                                <Radio value='large'>Shenzhen</Radio>
-                            </RadioGroup>
+                            <Routes>
+                                <Route path='/' element={<Dashboard/>}/>
+                                <Route path='/setting' element={<Login/>}/>
+                                <Route path='/login' element={<Login/>}/>
+                                <Route path='/profile' element={<Login/>}/>
+                            </Routes>
                         </Content>
                         <Footer>
                             <FooterLayout/>
