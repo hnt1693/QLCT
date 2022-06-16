@@ -1,8 +1,8 @@
 import React, {useRef} from 'react';
 import {
     Badge,
-    Button, Divider,
-    Empty,
+    Button,
+    Image,
     Menu,
     PageHeader,
     Popover,
@@ -12,6 +12,7 @@ import {
     Typography
 } from "@arco-design/web-react";
 import {IconExport, IconNotification, IconSettings, IconSun, IconUser} from "@arco-design/web-react/icon";
+
 import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 import './header.css'
 import {GB, JP, VN} from 'country-flag-icons/react/3x2'
@@ -21,7 +22,7 @@ import {setDarkMode, setLocale} from "../redux/config-provider-slice";
 import {Link, useNavigate} from "react-router-dom";
 
 HeaderLayout.propTypes = {};
-
+const IMAGE_URL = process.env.REACT_APP_BASE_URL + "/files"
 const locales = [
     {key: "vn", value: "Vietnamese", icon: <VN className={"ac"} style={{height: 12}}/>},
     {key: "en", value: "English", icon: <GB className={"ac"} style={{height: 12}}/>},
@@ -32,7 +33,13 @@ const userMenus = [
     {key: "/profile", title: "Profile", icon: <IconUser fontSize={16}/>, requiredLogin: true},
     {key: "/setting", title: "Setting", icon: <IconSettings fontSize={16}/>, requiredLogin: true},
     {key: "/logout", title: "Logout", icon: <IconExport fontSize={16} style={{color: "red"}}/>, requiredLogin: true},
-    {key: "/login", title: "Login", icon: <IconExport fontSize={16} style={{color: "red"}}/>, requiredLogin: false},
+    {
+        key: "/login",
+        title: "Login",
+        icon: <IconExport fontSize={16} style={{color: "red"}}/>,
+        requiredLogin: false,
+        roles: ["ADMIN"]
+    },
 ];
 
 function HeaderLayout(props) {
@@ -89,7 +96,7 @@ function HeaderLayout(props) {
                 <div className={"notify-item"}>
                     <Space direction={"horizontal"} align={"center"}>
                         <Badge status={nt.seen ? 'success' : 'error'}/>
-                        <Typography.Text className={"notify-from"} >{nt.from}</Typography.Text>
+                        <Typography.Text className={"notify-from"}>{nt.from}</Typography.Text>
                     </Space>
                     <Typography.Text className={"notify-msg"}>{nt.msg}</Typography.Text>
                     <Typography.Text type={"primary"} style={{fontSize: 12, textAlign: "right"}}>09:00:12
@@ -147,13 +154,15 @@ function HeaderLayout(props) {
 
 
                         <Popover position='br' content={userMenu} trigger={'click'}>
-                            <Avatar ref={userMenuRef} style={{cursor: "pointer"}}>AVT</Avatar>
+                            <Avatar ref={userMenuRef} style={{cursor: "pointer"}}>
+                                <Image src={IMAGE_URL + "/" + currentUser?.img}/>
+                            </Avatar>
                         </Popover>
                         {currentUser && <div className={"user-info-container"}>
                             <Typography.Text bold style={{fontSize: 14}} type={darkMode ? "secondary" : "primary"}>
                                 {currentUser.fullName}
                             </Typography.Text>
-                            <Typography.Text style={{fontSize: 10,textOverflow:'ellipsis',maxWidth:120}}>
+                            <Typography.Text style={{fontSize: 10, textOverflow: 'ellipsis', maxWidth: 120}}>
                                 {currentUser.email || 'hnt1693@gmail.com'}
                             </Typography.Text>
                         </div>}

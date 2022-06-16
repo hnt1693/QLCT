@@ -32,7 +32,7 @@ function Login(props) {
                     setLoading(false)
                     dispatch(setUser(res.data));
                     Notification.success({ title: 'LOGIN', content: 'This is a success Notification!' });
-                }, 5000)
+                }, 3000)
             }
         } catch (e) {
             setTimeout(() => {
@@ -40,7 +40,7 @@ function Login(props) {
                 console.log(e.response)
                 setLoading(false);
                 Notification.error({ title: 'LOGIN', content: e.response.data.message });
-            }, 5000)
+            }, 3000)
         }
 
     }
