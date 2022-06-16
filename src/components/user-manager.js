@@ -24,8 +24,10 @@ const columns = [
     {
         title: '',
         dataIndex: 'key',
+        width:250,
+        align:'center',
         render: (key) => <Space>
-            <Button type='primary' status={"success"} size={"small"} icon={<IconEdit/>} onClick={e => alert(key)}/>
+            <Button type='primary' status={"success"} size={"small"} icon={<i className="fa-solid fa-marker"></i>} onClick={e => alert(key)}/>
 
             <Popconfirm
                 position={"bottom"}
@@ -37,9 +39,9 @@ const columns = [
                     Message.error({content: 'cancel'});
                 }}
             >
-                <Button type='primary' status={"danger"} size={"small"} icon={<IconDelete/>}/>
+                <Button type='primary' status={"danger"} size={"small"} icon={<i className="fa-solid fa-trash-can"></i>}/>
             </Popconfirm>
-            <Button type='primary' status={"default"} size={"small"} icon={<IconTool/>} onClick={e => alert(key)}/>
+            <Button type='primary' status={"default"} size={"small"} icon={<i className="fa-solid fa-people-roof"></i>} onClick={e => alert(key)}/>
         </Space>,
     }
 ];

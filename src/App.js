@@ -1,13 +1,6 @@
 import './App.css';
-import {ConfigProvider, Layout, Menu, Message} from "@arco-design/web-react";
-import {
-    IconApps,
-    IconCalendar,
-    IconCaretLeft,
-    IconCaretRight,
-    IconHome,
-    IconPlayArrow, IconUserGroup
-} from '@arco-design/web-react/icon';
+import {ConfigProvider, Layout, Menu} from "@arco-design/web-react";
+import {IconCalendar, IconCaretLeft, IconCaretRight, IconPlayArrow} from '@arco-design/web-react/icon';
 import React, {useEffect, useState} from "react";
 import FooterLayout from "./layout/footer";
 import HeaderLayout from "./layout/header";
@@ -23,6 +16,8 @@ import Profile from "./components/profile";
 import Setting from "./components/setting";
 import UserManager from "./components/user-manager";
 import {useLocation} from "react-router";
+import GroupManager from "./components/group-manager";
+import Component403 from "./components/ui/compent403";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -38,13 +33,22 @@ const localeObject = {
 
 const routes = [
     {
-        key: "/dashboard", title: "Dashboard", icon: <IconApps/>, child: [
+        key: "/dashboard",
+        title: "Dashboard",
+        icon: <i className="fa-solid fa-gauge" style={{marginRight: 16}}></i>,
+        child: [
             {key: '0-1', title: "Dashboard1", icon: <IconCalendar/>, child: []},
             {key: '0-2', title: "Dashboard2", icon: <IconCalendar/>, child: []},
         ]
     },
     {key: 1, title: "Home", icon: <IconPlayArrow/>, child: []},
-    {key: "/users", title: "Users", icon: <IconUserGroup fontSize={18}/>, child: []},
+    {key: "/users", title: "Users", icon: <i className="fa-solid fa-users" style={{marginRight: 16}}></i>, child: []},
+    {
+        key: "/groups",
+        title: "Groups",
+        icon: <i className="fa-solid fa-people-roof " style={{marginRight: 16}}></i>,
+        child: []
+    },
 ]
 
 function App() {
@@ -78,7 +82,7 @@ function App() {
 
     useEffect(() => {
         if (currentUser) {
-            navigate(location.pathname!=="/logout"?location.pathname:"/", {replace: true})
+            navigate(location.pathname !== "/logout" ? location.pathname : "/", {replace: true})
         }
     }, [currentUser]);
     const navigateTo = (key) => {
@@ -113,14 +117,16 @@ function App() {
                     </Sider>
 
                     <Layout>
-                        <Content style={{overflow:"auto !important"}}>
-                            <Routes>
+                        <Content style={{overflow: "auto !important"}}>
+                            <Routes>}
+                                {privateRoute(["ROLE_ADMIN"],currentUser.roles,"/dashboard",<Dashboard/>)}
                                 <Route path='/' element={<Dashboard/>}/>
                                 <Route path='/setting' element={<Setting/>}/>
                                 {/*<Route path='/login' element={<Login/>}/>*/}
                                 <Route path='/profile' element={<Profile/>}/>
                                 <Route path='/logout' element={<Logout/>}/>
                                 <Route path='/users' element={<UserManager/>}/>
+                                <Route path='/groups' element={<GroupManager/>}/>
                             </Routes>
                         </Content>
                         <Footer>
@@ -133,6 +139,17 @@ function App() {
             </Layout>
         </ConfigProvider>
     );
+}
+
+function privateRoute(roles, userRoles, path, element) {
+    if (roles.length > 0) {
+        const intersection = roles.filter(val=>userRoles.includes(val));
+        if (intersection.length !== 0) {
+            return <Route path={path} element={element}/>
+        }
+    }
+    return <Route path={path} element={<Component403/>} />
+
 }
 
 export default App;

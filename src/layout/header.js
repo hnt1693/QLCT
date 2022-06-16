@@ -30,13 +30,13 @@ const locales = [
 ]
 
 const userMenus = [
-    {key: "/profile", title: "Profile", icon: <IconUser fontSize={16}/>, requiredLogin: true},
-    {key: "/setting", title: "Setting", icon: <IconSettings fontSize={16}/>, requiredLogin: true},
-    {key: "/logout", title: "Logout", icon: <IconExport fontSize={16} style={{color: "red"}}/>, requiredLogin: true},
+    {key: "/profile", title: "Profile", icon: <i className="fa-solid fa-bell" style={{marginRight:5}}></i>, requiredLogin: true},
+    {key: "/setting", title: "Setting", icon: <i className="fa-solid fa-gears"  style={{marginRight:5}}></i>, requiredLogin: true},
+    {key: "/logout", title: "Logout", icon: <i className="fa-solid fa-right-from-bracket" style={{color:"red",marginRight:5}}></i>, requiredLogin: true},
     {
         key: "/login",
         title: "Login",
-        icon: <IconExport fontSize={16} style={{color: "red"}}/>,
+        icon: <i className="fa-solid fa-arrow-right-to-bracket" style={{color:"green", marginRight:5}}></i>,
         requiredLogin: false,
         roles: ["ADMIN"]
     },
@@ -137,7 +137,7 @@ function HeaderLayout(props) {
                                  trigger={'click'}>
                             <Badge count={9} dot dotStyle={{width: 6, height: 6}}>
                                 <Button type='secondary' style={{backgroundColor: 'var(--color-fill-4)'}} shape='circle'
-                                        icon={<IconNotification fontSize={20}/>}/>
+                                        icon={<i className="fa-solid fa-bell"></i>}/>
                             </Badge>
                         </Popover>}
 
