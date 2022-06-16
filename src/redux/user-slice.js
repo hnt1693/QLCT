@@ -1,9 +1,16 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {Axios as axios} from "axios";
+import authService from '../service/auth-service'
+
+const getUser = () => {
+    const user = localStorage.getItem("currentUser");
+    return user ? JSON.parse(user) : null;
+}
 
 const initialState = {
-    currentUser: {name: "anymous"}
-}
+    currentUser: getUser(),
+    pending: false
+};
 
 const fetchUserById = createAsyncThunk(
     'users/fetchByIdStatus',
@@ -13,19 +20,28 @@ const fetchUserById = createAsyncThunk(
     }
 )
 
+
 const userSlice = createSlice({
     name: 'user',
     initialState: initialState,
-    extraReducers: {
-        [fetchUserById.pending]: (state, action) => {
-            return state + action.payload
+    reducers: {
+        setUser: (state, action) => {
+            state.currentUser = action.payload;
+            if (action.payload) {
+                localStorage.setItem("currentUser", JSON.stringify(action.payload))
+            } else {
+                localStorage.removeItem("currentUser")
+            }
         }
+    },
+    extraReducers: {
+
     },
 })
 
 // Extract the action creators object and the reducer
 const {actions, reducer} = userSlice
 // Extract and export each action creator by name
-export const {createPost, updatePost, deletePost} = actions
+export const {setUser} = actions
 // Export the reducer, either as a default or named export
 export default reducer

@@ -1,6 +1,44 @@
-.arco-popover-content{
+.arco-popover-content {
     padding: 2px 0 !important;
 }
-.arco-page-header{
-    padding: 8px 0!important;
+
+.arco-page-header {
+    padding: 8px 0 !important;
+}
+
+.user-info-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.notify-item {
+    display: flex;
+    flex-direction: column;
+    margin: 4px 8px 4px 8px;
+    /*background-color: #e7e3e3;*/
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 2px;
+
+}
+
+.notify-msg{
+    max-height: 65px;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.notify-item:after {
+    content: "";
+    border-bottom: solid 1px #bebeaf;
+}
+
+.notify-item:hover {
+    background-color: var(--color-fill-2);
+}
+
+.notify-from {
+    padding: 2px;
+    border-radius: 5px;
+
 }

@@ -1,0 +1,9 @@
+.login-container .login-form .arco-row {
+    justify-content: space-around !important;
+}
+
+.login-container .login-form .img-container img {
+    margin-left: 30%;
+    width: 40%;
+    margin-bottom: 20px;
+}
