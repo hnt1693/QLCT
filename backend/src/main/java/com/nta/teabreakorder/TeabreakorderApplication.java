@@ -1,19 +1,10 @@
 package com.nta.teabreakorder;
 
-import com.nta.teabreakorder.model.ERole;
-import com.nta.teabreakorder.model.Role;
-import com.nta.teabreakorder.model.User;
-import com.nta.teabreakorder.repository.RoleRepository;
-import com.nta.teabreakorder.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @SpringBootApplication

@@ -1,6 +1,6 @@
 package com.nta.teabreakorder.config;
 
-import com.nta.teabreakorder.repository.UserRepository;
+import com.nta.teabreakorder.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;

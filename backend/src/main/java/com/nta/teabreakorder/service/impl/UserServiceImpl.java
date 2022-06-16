@@ -1,21 +1,19 @@
 package com.nta.teabreakorder.service.impl;
 
 import com.nta.teabreakorder.common.CommonUtil;
-import com.nta.teabreakorder.model.User;
+import com.nta.teabreakorder.model.auth.User;
 import com.nta.teabreakorder.payload.response.JwtResponse;
-import com.nta.teabreakorder.repository.UserRepository;
+import com.nta.teabreakorder.repository.auth.UserRepository;
 import com.nta.teabreakorder.security.jwt.JwtUtils;
 import com.nta.teabreakorder.security.service.UserDetailsImpl;
 import com.nta.teabreakorder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 

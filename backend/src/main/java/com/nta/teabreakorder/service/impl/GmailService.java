@@ -1,8 +1,8 @@
 package com.nta.teabreakorder.service.impl;
 
 
-import com.nta.teabreakorder.model.User;
-import com.nta.teabreakorder.repository.UserRepository;
+import com.nta.teabreakorder.model.auth.User;
+import com.nta.teabreakorder.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;

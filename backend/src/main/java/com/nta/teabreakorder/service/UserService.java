@@ -1,6 +1,5 @@
 package com.nta.teabreakorder.service;
 
-import com.nta.teabreakorder.model.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

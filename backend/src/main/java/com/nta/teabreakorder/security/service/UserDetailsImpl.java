@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.nta.teabreakorder.model.User;
+import com.nta.teabreakorder.model.auth.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserDetailsImpl implements UserDetails {
@@ -41,8 +41,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+        List<GrantedAuthority> authorities = user.getGroups().stream()
+                .map(gr -> new SimpleGrantedAuthority(gr.getRegex()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(

@@ -1,4 +1,4 @@
-package com.nta.teabreakorder.model;
+package com.nta.teabreakorder.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,14 +6,16 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "username" ),
+                @UniqueConstraint(columnNames = "email" )
         })
 public class User {
     @Id
@@ -38,15 +40,20 @@ public class User {
 
     private String img;
 
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    private Set<Role> roles = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @JoinTable(name = "user_group",
+            joinColumns = @JoinColumn(name = "user_id" ),
+            inverseJoinColumns = @JoinColumn(name = "group_id" ))
+    private List<Group> groups = new ArrayList<>();
 
-
-    @Column(name = "is_deleted")
-    @JsonProperty("isDeleted")
+    @Column(name = "is_deleted" )
+    @JsonProperty("isDeleted" )
     private boolean isDeleted = false;
 
     public User() {
@@ -91,14 +98,6 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     public String getFullName() {
         return fullName;
     }
@@ -115,6 +114,13 @@ public class User {
         this.img = img;
     }
 
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 
     public boolean isDeleted() {
         return isDeleted;

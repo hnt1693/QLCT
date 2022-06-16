@@ -1,10 +1,13 @@
 package com.nta.teabreakorder.payload.request;
 
+import com.nta.teabreakorder.model.auth.Group;
+
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.*;
 
-public class SignupRequest {
+public class UserRegisterRequest {
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;
@@ -13,7 +16,6 @@ public class SignupRequest {
     @Size(max = 50)
     @Email
     private String email;
-
     @NotBlank
     @Size(min = 3, max = 40)
     private String fullName;
@@ -21,10 +23,9 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
-    private Set<String> role;
+    private List<Group> groups;
 
-
-
+    
     public String getUsername() {
         return username;
     }
@@ -57,11 +58,11 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRole() {
-        return this.role;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setRole(Set<String> role) {
-        this.role = role;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }

@@ -65,7 +65,7 @@ public class DaoUtils {
 
     public static List<String> getFieldsFilter(String fields) {
         String[] fieldArray = fields.split(",");
-        return Arrays.stream(fieldArray).toList();
+        return Arrays.asList(fieldArray);
     }
 
     public static Object filterField(List<String> fields, Object object) {

@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nta.teabreakorder.model.User;
-import com.nta.teabreakorder.repository.UserRepository;
+import com.nta.teabreakorder.model.auth.User;
+import com.nta.teabreakorder.repository.auth.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
