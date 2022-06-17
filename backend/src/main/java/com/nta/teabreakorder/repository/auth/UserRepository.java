@@ -31,4 +31,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "update User u set u.isDeleted = true where u.id in :ids")
     void deletes(@Param("ids") List<Long> ids);
+
+    @Query(value = "select * from users u inner join user_group ug on u.id = ug.user_id\n" +
+            "where ug.group_id = :id", nativeQuery = true)
+    List<User> getUsersByGroupId(@Param("id") Long id);
 }

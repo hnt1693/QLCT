@@ -12,4 +12,9 @@ public interface UserService{
 
     ResponseEntity deletesUser(List<Long> ids) throws Exception;
 
+    ResponseEntity getAll() throws Exception;
+
+
+
+
 }

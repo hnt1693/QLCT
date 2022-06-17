@@ -79,6 +79,13 @@ public class UserController {
         }
     }
 
+
+    @GetMapping("/all")
+    public ResponseEntity getAll()
+            throws Exception {
+        return userService.getAll();
+    }
+
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<User> getUserById(HttpServletRequest request)

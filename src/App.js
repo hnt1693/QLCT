@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import vn from "@arco-design/web-react/es/locale/vi-VN";
 import jp from "@arco-design/web-react/es/locale/ja-JP";
 import en from "@arco-design/web-react/es/locale/en-US";
+import cn from "@arco-design/web-react/es/locale/zh-CN";
 import {Route, Routes, useNavigate} from 'react-router-dom'
 import Login from "./components/login";
 import Dashboard from "./components/dashboard";
@@ -16,8 +17,11 @@ import Profile from "./components/profile";
 import Setting from "./components/setting";
 import UserManager from "./components/user-manager";
 import {useLocation} from "react-router";
-import GroupManager from "./components/group-manager";
+import GroupManager from "./components/auth/group-manager";
 import Component403 from "./components/ui/compent403";
+import Component404 from "./components/ui/component404";
+import menuService from './service/menu-service'
+import MenuManager from "./components/ui/menu-manager";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -28,7 +32,8 @@ const Content = Layout.Content;
 const localeObject = {
     vn: vn,
     en: en,
-    jp: jp
+    jp: jp,
+    cn: cn
 }
 
 const routes = [
@@ -55,36 +60,68 @@ function App() {
     const location = useLocation();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
+    const [menu, setMenu] = useState([]);
+
     const configProvider = useSelector(state => state.configProvider);
     const dispatch = useDispatch();
-    const currentUser = useSelector(state => state.user.currentUser)
+    const currentUser = useSelector(state => state.user.currentUser);
     const handleCollapsed = () => {
         setCollapsed(!collapsed);
     }
 
+    //
+    // const renderMenuItem = (item) => {
+    //     return item.child.length > 0 ? <SubMenu
+    //         key={item.key}
+    //         title={
+    //             <span>
+    //                 {item.icon}
+    //                 {item.title}
+    //             </span>
+    //         }
+    //     >
+    //         {item.child.map(ob => (renderMenuItem(ob)))}
+    //     </SubMenu> : <MenuItem key={item.key}>
+    //         {item.icon}
+    //         {item.title}
+    //     </MenuItem>
+    // }
 
     const renderMenuItem = (item) => {
         return item.child.length > 0 ? <SubMenu
-            key={item.key}
+            key={item.path}
             title={
                 <span>
-                    {item.icon}
+                    <i className={item.icon} style={{marginRight: 16}}></i>
                     {item.title}
                 </span>
             }
         >
             {item.child.map(ob => (renderMenuItem(ob)))}
-        </SubMenu> : <MenuItem key={item.key}>
-            {item.icon}
+        </SubMenu> : <MenuItem key={item.path}>
+            <i className={item.icon} style={{marginRight: 16}}></i>
             {item.title}
         </MenuItem>
     }
 
+    const loadMenu = async () => {
+        const res = await menuService.getMenus(null);
+        if (res.status === 200) {
+            setMenu(res.data.data);
+        }
+    }
+
+    useEffect(() => {
+        loadMenu();
+    }, [])
+
     useEffect(() => {
         if (currentUser) {
-            navigate(location.pathname !== "/logout" ? location.pathname : "/", {replace: true})
+            navigate(location.pathname !== "/logout" && location.pathname !== "/login" ? location.pathname : "/", {replace: true})
         }
     }, [currentUser]);
+
+
     const navigateTo = (key) => {
         navigate(key, {replace: true})
     }
@@ -112,21 +149,23 @@ function App() {
                             accordion={false}
                             style={{width: '100%'}}
                         >
-                            {routes.map(route => (renderMenuItem(route)))}
+                            {menu.map(route => (renderMenuItem(route)))}
                         </Menu>
                     </Sider>
 
                     <Layout>
                         <Content style={{overflow: "auto !important"}}>
                             <Routes>}
-                                {privateRoute(["ROLE_ADMIN"],currentUser.roles,"/dashboard",<Dashboard/>)}
+                                {privateRoute(["ROLE_ADMIN"], currentUser.roles, "/dashboard", <Dashboard/>)}
                                 <Route path='/' element={<Dashboard/>}/>
                                 <Route path='/setting' element={<Setting/>}/>
                                 {/*<Route path='/login' element={<Login/>}/>*/}
                                 <Route path='/profile' element={<Profile/>}/>
                                 <Route path='/logout' element={<Logout/>}/>
                                 <Route path='/users' element={<UserManager/>}/>
-                                <Route path='/groups' element={<GroupManager/>}/>
+                                <Route path='/menus' element={<MenuManager/>}/>
+                                {privateRoute([], currentUser.roles, "/groups", <GroupManager/>)}
+                                <Route path='*' element={<Component404/>}/>
                             </Routes>
                         </Content>
                         <Footer>
@@ -143,12 +182,14 @@ function App() {
 
 function privateRoute(roles, userRoles, path, element) {
     if (roles.length > 0) {
-        const intersection = roles.filter(val=>userRoles.includes(val));
+        const intersection = roles.filter(val => userRoles.includes(val));
         if (intersection.length !== 0) {
             return <Route path={path} element={element}/>
         }
+    } else {
+        return <Route path={path} element={element}/>
     }
-    return <Route path={path} element={<Component403/>} />
+    return <Route path={path} element={<Component403/>}/>
 
 }
 

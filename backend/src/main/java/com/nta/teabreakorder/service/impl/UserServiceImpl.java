@@ -61,4 +61,11 @@ public class UserServiceImpl implements UserService {
         userRepository.deletes(ids);
         return CommonUtil.createResponseEntityOK(1);
     }
+
+    @Override
+    public ResponseEntity getAll() throws Exception {
+        List<User> users = userRepository.findAll();
+        users.forEach(u -> u.setGroups(null));
+        return CommonUtil.createResponseEntityOK(users);
+    }
 }

@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
     locale: "vn",
-    size: "large",
+    size: "default",
     darkMode: false
 }
 

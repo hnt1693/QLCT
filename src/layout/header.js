@@ -15,7 +15,7 @@ import {IconExport, IconNotification, IconSettings, IconSun, IconUser} from "@ar
 
 import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 import './header.css'
-import {GB, JP, VN} from 'country-flag-icons/react/3x2'
+import {GB, JP, VN, CN} from 'country-flag-icons/react/3x2'
 import {emitLocaleEvent} from "../common/event";
 import {useDispatch, useSelector} from "react-redux";
 import {setDarkMode, setLocale} from "../redux/config-provider-slice";
@@ -27,16 +27,32 @@ const locales = [
     {key: "vn", value: "Vietnamese", icon: <VN className={"ac"} style={{height: 12}}/>},
     {key: "en", value: "English", icon: <GB className={"ac"} style={{height: 12}}/>},
     {key: "jp", value: "Japanese", icon: <JP className={"ac"} style={{height: 12}}/>},
+    {key: "cn", value: "China", icon: <CN className={"ac"} style={{height: 12}}/>},
 ]
 
 const userMenus = [
-    {key: "/profile", title: "Profile", icon: <i className="fa-solid fa-bell" style={{marginRight:5}}></i>, requiredLogin: true},
-    {key: "/setting", title: "Setting", icon: <i className="fa-solid fa-gears"  style={{marginRight:5}}></i>, requiredLogin: true},
-    {key: "/logout", title: "Logout", icon: <i className="fa-solid fa-right-from-bracket" style={{color:"red",marginRight:5}}></i>, requiredLogin: true},
+    {
+        key: "/profile",
+        title: "Profile",
+        icon: <i className="fa-solid fa-bell" style={{marginRight: 5}}></i>,
+        requiredLogin: true
+    },
+    {
+        key: "/setting",
+        title: "Setting",
+        icon: <i className="fa-solid fa-gears" style={{marginRight: 5}}></i>,
+        requiredLogin: true
+    },
+    {
+        key: "/logout",
+        title: "Logout",
+        icon: <i className="fa-solid fa-right-from-bracket" style={{color: "red", marginRight: 5}}></i>,
+        requiredLogin: true
+    },
     {
         key: "/login",
         title: "Login",
-        icon: <i className="fa-solid fa-arrow-right-to-bracket" style={{color:"green", marginRight:5}}></i>,
+        icon: <i className="fa-solid fa-arrow-right-to-bracket" style={{color: "green", marginRight: 5}}></i>,
         requiredLogin: false,
         roles: ["ADMIN"]
     },
@@ -92,8 +108,8 @@ function HeaderLayout(props) {
     const renderNotification = (notifications) => {
         return <div style={{width: 300}}>
             <Typography.Title heading={6} style={{paddingLeft: 10}}>Notifications</Typography.Title>
-            {notifications.map(nt => (
-                <div className={"notify-item"}>
+            {notifications.map((nt, id) => (
+                <div className={"notify-item"} key={id}>
                     <Space direction={"horizontal"} align={"center"}>
                         <Badge status={nt.seen ? 'success' : 'error'}/>
                         <Typography.Text className={"notify-from"}>{nt.from}</Typography.Text>

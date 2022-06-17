@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Result} from "@arco-design/web-react";
 
-Component403.propTypes = {
-
+Component404.propTypes = {
+    
 };
 
-function Component403(props) {
+function Component404(props) {
     return (
         <Result
             style={{height:'50vh',paddingTop:'30vh'}}
-            status='403'
+            status='404'
             subTitle='Access to this resource on the server is denied.'
             extra={ <Button type='primary'>Back</Button>}
         >
@@ -18,4 +18,4 @@ function Component403(props) {
     );
 }
 
-export default Component403;
+export default Component404;
