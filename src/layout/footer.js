@@ -11,7 +11,7 @@ FooterLayout.propTypes = {
 function FooterLayout(props) {
     return (
         <div className={'footer-container'}>
-            <div>FOOTER</div>
+            <div>Copyright 2022</div>
         </div>
     );
 }

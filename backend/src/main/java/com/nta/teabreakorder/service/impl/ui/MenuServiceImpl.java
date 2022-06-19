@@ -18,7 +18,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity get(Pageable pageable) throws Exception {
-        return CommonUtil.createResponseEntityOK(menuRepository.findAllByParentIdIsNull());
+        return CommonUtil.createResponseEntityOK(menuRepository.findAllByParentMenuIsNullOrderBySort());
     }
 
     @Override
@@ -28,12 +28,23 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public ResponseEntity create(Menu menu) throws Exception {
+        if(menu.getParentMenu()!=null){
+            Menu parentMenu = menuRepository.getById(menu.getParentMenu().getId());
+            menu.setParentMenu(parentMenu);
+        }
         return CommonUtil.createResponseEntityOK(menuRepository.save(menu));
     }
 
     @Override
     public ResponseEntity update(Menu menu) throws Exception {
-        return CommonUtil.createResponseEntityOK(menuRepository.save(menu));
+        Menu oldMenu = menuRepository.getById(menu.getId());
+        oldMenu.setRoles(menu.getRoles());
+        oldMenu.setIcon(menu.getIcon());
+        oldMenu.setPath(menu.getPath());
+        oldMenu.setTitle(menu.getTitle());
+        oldMenu.setActivated(menu.isActivated());
+        oldMenu.setSort(menu.getSort());
+        return CommonUtil.createResponseEntityOK(menuRepository.save(oldMenu));
     }
 
     @Override

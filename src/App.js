@@ -1,6 +1,6 @@
 import './App.css';
 import {ConfigProvider, Layout, Menu} from "@arco-design/web-react";
-import {IconCalendar, IconCaretLeft, IconCaretRight, IconPlayArrow} from '@arco-design/web-react/icon';
+import {IconCaretLeft, IconCaretRight} from '@arco-design/web-react/icon';
 import React, {useEffect, useState} from "react";
 import FooterLayout from "./layout/footer";
 import HeaderLayout from "./layout/header";
@@ -11,17 +11,11 @@ import en from "@arco-design/web-react/es/locale/en-US";
 import cn from "@arco-design/web-react/es/locale/zh-CN";
 import {Route, Routes, useNavigate} from 'react-router-dom'
 import Login from "./components/login";
-import Dashboard from "./components/dashboard";
 import Logout from "./components/logout";
-import Profile from "./components/profile";
-import Setting from "./components/setting";
-import UserManager from "./components/user-manager";
 import {useLocation} from "react-router";
-import GroupManager from "./components/auth/group-manager";
 import Component403 from "./components/ui/compent403";
-import Component404 from "./components/ui/component404";
 import menuService from './service/menu-service'
-import MenuManager from "./components/ui/menu-manager";
+import {combineRoutes} from "./common/routes";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -36,25 +30,6 @@ const localeObject = {
     cn: cn
 }
 
-const routes = [
-    {
-        key: "/dashboard",
-        title: "Dashboard",
-        icon: <i className="fa-solid fa-gauge" style={{marginRight: 16}}></i>,
-        child: [
-            {key: '0-1', title: "Dashboard1", icon: <IconCalendar/>, child: []},
-            {key: '0-2', title: "Dashboard2", icon: <IconCalendar/>, child: []},
-        ]
-    },
-    {key: 1, title: "Home", icon: <IconPlayArrow/>, child: []},
-    {key: "/users", title: "Users", icon: <i className="fa-solid fa-users" style={{marginRight: 16}}></i>, child: []},
-    {
-        key: "/groups",
-        title: "Groups",
-        icon: <i className="fa-solid fa-people-roof " style={{marginRight: 16}}></i>,
-        child: []
-    },
-]
 
 function App() {
     const location = useLocation();
@@ -69,26 +44,8 @@ function App() {
         setCollapsed(!collapsed);
     }
 
-    //
-    // const renderMenuItem = (item) => {
-    //     return item.child.length > 0 ? <SubMenu
-    //         key={item.key}
-    //         title={
-    //             <span>
-    //                 {item.icon}
-    //                 {item.title}
-    //             </span>
-    //         }
-    //     >
-    //         {item.child.map(ob => (renderMenuItem(ob)))}
-    //     </SubMenu> : <MenuItem key={item.key}>
-    //         {item.icon}
-    //         {item.title}
-    //     </MenuItem>
-    // }
-
     const renderMenuItem = (item) => {
-        return item.child.length > 0 ? <SubMenu
+        return item.children.length > 0 ? <SubMenu
             key={item.path}
             title={
                 <span>
@@ -97,7 +54,7 @@ function App() {
                 </span>
             }
         >
-            {item.child.map(ob => (renderMenuItem(ob)))}
+            {item.children.map(ob => (renderMenuItem(ob)))}
         </SubMenu> : <MenuItem key={item.path}>
             <i className={item.icon} style={{marginRight: 16}}></i>
             {item.title}
@@ -107,7 +64,7 @@ function App() {
     const loadMenu = async () => {
         const res = await menuService.getMenus(null);
         if (res.status === 200) {
-            setMenu(res.data.data);
+            setMenu(combineRoutes(res.data.data));
         }
     }
 
@@ -155,17 +112,12 @@ function App() {
 
                     <Layout>
                         <Content style={{overflow: "auto !important"}}>
-                            <Routes>}
-                                {privateRoute(["ROLE_ADMIN"], currentUser.roles, "/dashboard", <Dashboard/>)}
-                                <Route path='/' element={<Dashboard/>}/>
-                                <Route path='/setting' element={<Setting/>}/>
-                                {/*<Route path='/login' element={<Login/>}/>*/}
-                                <Route path='/profile' element={<Profile/>}/>
+                            <Routes>
+                                {menu.map((m, index) =>
+                                    privateRoute(m.roles, currentUser.roles, m.path, m.element)
+                                )}
+                                <Route path='/login' element={<Login/>}/>
                                 <Route path='/logout' element={<Logout/>}/>
-                                <Route path='/users' element={<UserManager/>}/>
-                                <Route path='/menus' element={<MenuManager/>}/>
-                                {privateRoute([], currentUser.roles, "/groups", <GroupManager/>)}
-                                <Route path='*' element={<Component404/>}/>
                             </Routes>
                         </Content>
                         <Footer>
@@ -180,7 +132,12 @@ function App() {
     );
 }
 
+function renderR(element, path) {
+    return <Route path={path} element={element}/>
+}
+
 function privateRoute(roles, userRoles, path, element) {
+
     if (roles.length > 0) {
         const intersection = roles.filter(val => userRoles.includes(val));
         if (intersection.length !== 0) {

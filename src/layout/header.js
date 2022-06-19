@@ -158,7 +158,8 @@ function HeaderLayout(props) {
                         </Popover>}
 
                         <Tooltip position='br' trigger='hover' content={`Dark mode ${darkMode ? 'on' : 'off'}`}>
-                            <Switch checkedText={<IconSun/>} uncheckedText={<IconSun/>}
+                            <Switch checkedText={<i className="fa-solid fa-moon"></i>} uncheckedText={<i
+                                className="fa-solid fa-sun"></i>}
                                     onChange={handleChangeDarkMode}/>
                         </Tooltip>
 

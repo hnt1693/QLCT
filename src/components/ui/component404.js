@@ -1,9 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Button, Result} from "@arco-design/web-react";
+import PropTypes from 'prop-types';
+
 
 Component404.propTypes = {
-    
+
 };
 
 function Component404(props) {

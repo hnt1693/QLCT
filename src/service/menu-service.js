@@ -7,7 +7,7 @@ const getMenus = (searchObject) => {
 };
 
 const getById = (id) => {
-    return axios.get(API_URL + "" + id);
+    return axios.get(API_URL + "/" + id);
 };
 
 const createGroup = (menu) => {
