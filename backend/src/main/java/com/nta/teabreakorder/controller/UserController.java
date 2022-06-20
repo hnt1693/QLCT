@@ -52,7 +52,7 @@ public class UserController {
 
     @Autowired
     PasswordEncoder encoder;
-    
+
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
@@ -83,19 +83,8 @@ public class UserController {
 
     @PutMapping("")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> updateUser(@Valid @RequestBody UserLoginRequest userDetails) throws Exception {
-        User user = userRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userDetails.getId()));
-        String oldImg = user.getImg();
-        user.setEmail(userDetails.getEmail());
-        user.setFullName(userDetails.getFullName());
-        user.setImg(userDetails.getImg());
-
-        userRepository.save(user);
-        if (oldImg != null && !oldImg.equals(userDetails.getImg())) {
-            filesStorageService.delete(oldImg);
-        }
-        return userService.getInfo();
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) throws Exception {
+        return userService.update(user);
     }
 
     @PutMapping("/{id}")

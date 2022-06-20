@@ -11,7 +11,7 @@ import {
     Table,
     Tooltip,
     Upload,
-    Notification, Select
+    Notification, Select, Image as Img
 } from '@arco-design/web-react';
 import userService from "../../service/user-service";
 import authService from "../../service/auth-service";
@@ -22,6 +22,7 @@ import EasyCropper from 'react-easy-crop';
 import './user.css'
 import {UPLOAD_URL} from "../../service/file.service";
 import {useSelector} from "react-redux";
+import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 
 const InputSearch = Input.Search;
 
@@ -251,6 +252,8 @@ function UserManager(props) {
             form.setFieldValue("key", modalConfig.currentUser.key)
             form.setFieldValue("username", modalConfig.currentUser.username);
             form.setFieldValue("email", modalConfig.currentUser.email);
+            form.setFieldValue("fullName", modalConfig.currentUser.fullName);
+            form.setFieldValue("groups", modalConfig.currentUser.groups.map(o => (o.key)));
         } else {
             form.resetFields();
         }
@@ -382,11 +385,11 @@ function UserManager(props) {
                         {...formItemLayout}
                         form={form}
                     >
-                        <FormItem label='Id' hidden field='key'>
-                            <Input placeholder='' hidden/>
+                        <FormItem label='Id' hidden  field='key'>
+                            <Input placeholder='' />
                         </FormItem>
                         <FormItem label='Username' field='username' rules={[{required: true}]}>
-                            <Input placeholder=''/>
+                            <Input placeholder='' readOnly={modalConfig.mode===1}/>
                         </FormItem>
                         <FormItem label='Name' field='fullName' rules={[{required: true}]}>
                             <Input placeholder=''/>
@@ -394,9 +397,13 @@ function UserManager(props) {
                         <FormItem label='Email' field='email' rules={[{required: true}]}>
                             <Input placeholder=''/>
                         </FormItem>
-                        <FormItem label='Password' field='password' rules={[{required: true}]}>
-                            <Input.Password placeholder=''/>
+                        <FormItem label='Email' field='img' hidden>
+                            <Input placeholder=''/>
                         </FormItem>
+                        {modalConfig.mode === 0 &&
+                        <FormItem label='Password' field='password' rules={[{required: true}]}>
+                            <Input.Password placeholder='Keep with empty'/>
+                        </FormItem>}
                         <FormItem
                             label='Groups'
                             required
@@ -408,112 +415,121 @@ function UserManager(props) {
                                 mode='multiple'
                                 maxTagCount={2}
                                 placeholder='please select'
-                            >
-                                {groups.map((gr, key) => (
-                                    <Select.Option key={key} value={gr.key}>{gr.groupName}</Select.Option>
-                                ))}
-                            </Select>
+                                options={groups.map(o => ({...o, label: o.groupName, value: o.key}))}
+                                filterOption={((inputValue, option) => {
+                                    return option.props.children.toLowerCase().includes(inputValue.toLowerCase());
+                                })}
+                            />
                         </FormItem>
+                        <Grid.Row align='center'>
+                            <Grid.Col span={5} align={"center"}>
+                                <Img width={'80%'} style={{borderRadius: '50%'}} alt='avatar'  preview={false} src={ process.env.REACT_APP_BASE_URL + "/files" + "/" + modalConfig.currentUser?.img}/>
+                            </Grid.Col>
+                            <Grid.Col span={19}>
+                                <Upload
+                                    style={{width:'100%'}}
+                                    listType='picture-card'
+                                    multiple={false}
+                                    limit={1}
+                                    autoUpload={true}
+                                    accept={"image/*"}
+                                    onChange={(uploadItem, currentFile) => {
+                                        if (uploadItem.length !== 0) {
+                                            setFileAvatar({
+                                                ...currentFile,
+                                                url: URL.createObjectURL(currentFile.originFile),
+                                            })
+                                        }
+                                    }}
+                                    headers={{Authorization: `Bearer ${currentUser.accessToken}`}}
+                                    action={UPLOAD_URL + "/avatar"}
+                                    onPreview={file => {
+                                        Modal.info({
+                                            title: 'Preview',
+                                            content: <div style={{textAlign: 'center'}}>
+                                                <img style={{maxWidth: '100%'}}
+                                                     src={file.url || URL.createObjectURL(file.originFile)}/>
+                                            </div>,
+                                            okText: "OK"
+                                        })
+                                    }}
 
-                        <Upload
-                            listType='picture-card'
-                            multiple={false}
-                            limit={1}
-                            autoUpload={true}
-                            accept={"image/*"}
-                            onChange={(uploadItem, currentFile) => {
-                                if (uploadItem.length !== 0) {
-                                    setFileAvatar({
-                                        ...currentFile,
-                                        url: URL.createObjectURL(currentFile.originFile),
-                                    })
-                                }
-                            }}
-                            headers={{Authorization: `Bearer ${currentUser.accessToken}`}}
-                            action={UPLOAD_URL + "/avatar"}
-                            onPreview={file => {
-                                Modal.info({
-                                    title: 'Preview',
-                                    content: <div style={{textAlign: 'center'}}>
-                                        <img style={{maxWidth: '100%'}}
-                                             src={file.url || URL.createObjectURL(file.originFile)}/>
-                                    </div>,
-                                    okText: "OK"
-                                })
-                            }}
-
-                            onRemove={file => {
-                                return new Promise((resolve, reject) => {
-                                    Modal.confirm({
-                                        title: 'Remove this avatar',
-                                        content: `Remove ${file.name}`,
-                                        onConfirm: () => {
-                                            resolve(true);
-                                            setFileAvatar(null);
-                                        },
-                                        onCancel: () => reject('cancel'),
-                                    });
-                                });
-                            }}
-                            fileList={file ? [file] : []}
-                            beforeUpload={async (file) => {
-                                return new Promise((resolve) => {
-                                    const modal = Modal.confirm({
-                                        title: 'Upload Avatar',
-                                        onCancel: () => {
-                                            resolve(false);
-                                            modal.close();
-                                        },
-                                        simple: false,
-                                        width: 500,
-                                        content: (
-                                            <Cropper
-                                                file={file}
-                                                onOk={(file) => {
-                                                    resolve(file);
-                                                    modal.close();
-                                                }}
-                                                onCancel={() => {
+                                    onRemove={file => {
+                                        return new Promise((resolve, reject) => {
+                                            Modal.confirm({
+                                                title: 'Remove this avatar',
+                                                content: `Remove ${file.name}`,
+                                                onConfirm: () => {
+                                                    resolve(true);
+                                                    setFileAvatar(null);
+                                                },
+                                                onCancel: () => reject('cancel'),
+                                            });
+                                        });
+                                    }}
+                                    fileList={file ? [file] : []}
+                                    beforeUpload={async (file) => {
+                                        return new Promise((resolve) => {
+                                            const modal = Modal.confirm({
+                                                title: 'Upload Avatar',
+                                                onCancel: () => {
                                                     resolve(false);
                                                     modal.close();
-                                                }}
-                                            />
-                                        ),
-                                        footer: null,
-                                    });
-                                });
-                            }}
-                        >
-                            <div className={null}>
-                                {file && file.url ? (
-                                    <div className='arco-upload-list-item-picture custom-upload-avatar'>
-                                        <img src={file.url}/>
-                                        <div className='arco-upload-list-item-picture-mask'>
-                                            <IconEdit/>
-                                        </div>
-                                        {file.status === 'uploading' && file.percent < 100 && <Progress
-                                            percent={file.percent}
-                                            type='circle'
-                                            size='mini'
-                                            style={{
-                                                position: 'absolute',
-                                                left: '50%',
-                                                top: '50%',
-                                                transform: 'translateX(-50%) translateY(-50%)'
-                                            }}
-                                        />
-                                        }
+                                                },
+                                                simple: false,
+                                                width: 500,
+                                                content: (
+                                                    <Cropper
+                                                        file={file}
+                                                        onOk={(file) => {
+                                                            resolve(file);
+                                                            modal.close();
+                                                        }}
+                                                        onCancel={() => {
+                                                            resolve(false);
+                                                            modal.close();
+                                                        }}
+                                                    />
+                                                ),
+                                                footer: null,
+                                            });
+                                        });
+                                    }}
+                                >
+                                    <div className={null}>
+                                        {file && file.url ? (
+                                            <div className='arco-upload-list-item-picture custom-upload-avatar'>
+                                                <img src={file.url}/>
+                                                <div className='arco-upload-list-item-picture-mask'>
+                                                    <IconEdit/>
+                                                </div>
+                                                {file.status === 'uploading' && file.percent < 100 && <Progress
+                                                    percent={file.percent}
+                                                    type='circle'
+                                                    size='mini'
+                                                    style={{
+                                                        position: 'absolute',
+                                                        left: '50%',
+                                                        top: '50%',
+                                                        transform: 'translateX(-50%) translateY(-50%)'
+                                                    }}
+                                                />
+                                                }
+                                            </div>
+                                        ) : (
+                                            <div className='arco-upload-trigger-picture'>
+                                                <div className='arco-upload-trigger-picture-text'>
+                                                    <IconPlus/>
+                                                    <div style={{marginTop: 10, fontWeight: 600}}>Upload Avatar</div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div className='arco-upload-trigger-picture'>
-                                        <div className='arco-upload-trigger-picture-text'>
-                                            <IconPlus/>
-                                            <div style={{marginTop: 10, fontWeight: 600}}>Upload Avatar</div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </Upload>
+                                </Upload>
+                            </Grid.Col>
+
+                        </Grid.Row>
+
                         {/*<div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end", marginTop: 15}}>*/}
                         {/*    <Transfer*/}
                         {/*        onChange={(newTargetKeys, direction, moveKeys) => {*/}
@@ -610,12 +626,12 @@ const Cropper = (props) => {
         return URL.createObjectURL(file);
     }, [file]);
 
-    useEffect(() => {
-        if (file) {
-            setCrop({x: 0, y: 0});
-            setZoom(1)
-        }
-    }, [file])
+    // useEffect(() => {
+    //     if (file) {
+    //         setCrop({x: 0, y: 0});
+    //         setZoom(1)
+    //     }
+    // }, [file])
 
     return (
         <div>
@@ -623,8 +639,7 @@ const Cropper = (props) => {
                 <EasyCropper
                     // style={{containerStyle: {width: '100%', height: 400}}}
                     cropSize={{width: size, height: size}}
-                    objectFit={"contain"}
-                    cropShape={"round"}
+                    cropShape={"rect"}
                     aspect={4 / 4}
                     image={url}
                     crop={crop}
@@ -654,7 +669,7 @@ const Cropper = (props) => {
                     />
                     <Slider
                         style={{flex: 1}}
-                        step={10}
+                        step={20}
                         value={size}
                         onChange={(v) => {
                             setSize(v);

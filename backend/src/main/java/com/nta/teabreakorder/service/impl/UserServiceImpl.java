@@ -2,8 +2,10 @@ package com.nta.teabreakorder.service.impl;
 
 import com.nta.teabreakorder.common.CommonUtil;
 import com.nta.teabreakorder.common.Pageable;
+import com.nta.teabreakorder.model.auth.Group;
 import com.nta.teabreakorder.model.auth.User;
 import com.nta.teabreakorder.payload.response.JwtResponse;
+import com.nta.teabreakorder.repository.auth.GroupRepository;
 import com.nta.teabreakorder.repository.auth.UserRepository;
 import com.nta.teabreakorder.repository.dao.UserDao;
 import com.nta.teabreakorder.security.jwt.JwtUtils;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private GroupRepository groupRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -90,7 +95,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity update(User user) throws Exception {
-        return null;
+        User oldUser = userRepository.getById(user.getId());
+        if(user.getGroups()!=null && !user.getGroups().isEmpty()){
+            List<Long>ids = new ArrayList<>();
+            for (Group group : user.getGroups()) {
+                ids.add(group.getId());
+            }
+            oldUser.setGroups(groupRepository.findAllById(ids));
+        }
+        if(user.getPassword()!=null){
+            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        oldUser.setUsername(user.getUsername());
+        oldUser.setFullName(user.getFullName());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setImg(user.getImg());
+        return CommonUtil.createResponseEntityOK(userRepository.save(oldUser));
     }
 
     @Override

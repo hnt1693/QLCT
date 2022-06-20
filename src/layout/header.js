@@ -172,7 +172,7 @@ function HeaderLayout(props) {
 
                         <Popover position='br' content={userMenu} trigger={'click'}>
                             <Avatar ref={userMenuRef} style={{cursor: "pointer"}}>
-                                <Image src={IMAGE_URL + "/" + currentUser?.img}/>
+                                <Image width={160} style={{borderRadius: '50%'}} alt='avatar'  preview={false} src={IMAGE_URL + "/" + currentUser?.img}/>
                             </Avatar>
                         </Popover>
                         {currentUser && <div className={"user-info-container"}>
