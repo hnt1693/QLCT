@@ -28,6 +28,13 @@ public class GroupController {
         return groupService.get(pageable);
     }
 
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/all")
+    public ResponseEntity getAllNoPagination() throws Exception {
+        return groupService.getAll();
+    }
+
     @PreAuthorize("permitAll()")
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Long id) throws Exception {

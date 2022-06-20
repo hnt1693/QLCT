@@ -1,9 +1,11 @@
 package com.nta.teabreakorder.service.impl;
 
 import com.nta.teabreakorder.common.CommonUtil;
+import com.nta.teabreakorder.common.Pageable;
 import com.nta.teabreakorder.model.auth.User;
 import com.nta.teabreakorder.payload.response.JwtResponse;
 import com.nta.teabreakorder.repository.auth.UserRepository;
+import com.nta.teabreakorder.repository.dao.UserDao;
 import com.nta.teabreakorder.security.jwt.JwtUtils;
 import com.nta.teabreakorder.security.service.UserDetailsImpl;
 import com.nta.teabreakorder.service.UserService;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -67,5 +71,30 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         users.forEach(u -> u.setGroups(null));
         return CommonUtil.createResponseEntityOK(users);
+    }
+
+    @Override
+    public ResponseEntity get(Pageable pageable) throws Exception {
+        return CommonUtil.createResponseEntityOK(userDao.get(pageable));
+    }
+
+    @Override
+    public ResponseEntity getById(Long id) throws Exception {
+        return CommonUtil.createResponseEntityOK(userRepository.findById(id));
+    }
+
+    @Override
+    public ResponseEntity create(User user) throws Exception {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity update(User user) throws Exception {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity deletes(List<Long> ids) throws Exception {
+        return null;
     }
 }

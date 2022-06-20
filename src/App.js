@@ -16,6 +16,7 @@ import {useLocation} from "react-router";
 import Component403 from "./components/ui/compent403";
 import menuService from './service/menu-service'
 import {combineRoutes} from "./common/routes";
+import Component404 from "./components/ui/component404";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -36,7 +37,6 @@ function App() {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const [menu, setMenu] = useState([]);
-
     const configProvider = useSelector(state => state.configProvider);
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.currentUser);
@@ -118,6 +118,7 @@ function App() {
                                 )}
                                 <Route path='/login' element={<Login/>}/>
                                 <Route path='/logout' element={<Logout/>}/>
+                                <Route path='*' element={<Component404/>}/>
                             </Routes>
                         </Content>
                         <Footer>
@@ -132,9 +133,6 @@ function App() {
     );
 }
 
-function renderR(element, path) {
-    return <Route path={path} element={element}/>
-}
 
 function privateRoute(roles, userRoles, path, element) {
 
@@ -146,7 +144,7 @@ function privateRoute(roles, userRoles, path, element) {
     } else {
         return <Route path={path} element={element}/>
     }
-    return <Route path={path} element={<Component403/>}/>
+    return <Route key={path} path={path} element={<Component403/>}/>
 
 }
 

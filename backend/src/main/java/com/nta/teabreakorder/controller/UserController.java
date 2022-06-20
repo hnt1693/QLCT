@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.nta.teabreakorder.common.Pageable;
 import com.nta.teabreakorder.payload.request.UserLoginRequest;
 import com.nta.teabreakorder.security.jwt.JwtUtils;
 import com.nta.teabreakorder.service.UserService;
@@ -24,7 +25,6 @@ import com.nta.teabreakorder.repository.auth.UserRepository;
 import java.util.ArrayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.stream.Collectors;
@@ -55,28 +55,14 @@ public class UserController {
     
 
     @GetMapping("")
-    @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<Map<String, Object>> getAllEmployees(@RequestParam(required = false) String username, @RequestParam(value = "page", defaultValue = "0", required = false) int page, @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
-        try {
-            List<User> users = new ArrayList<User>();
-            Pageable paging = PageRequest.of(page, size);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getAllEmployees(@RequestParam(required = false) Integer page,
+                                                               @RequestParam(required = false) Integer pageSize,
+                                                               @RequestParam(required = false) String searchData,
+                                                               @RequestParam(required = false) String sortData) throws Exception  {
 
-            Page<User> pageUsers;
-            if (username == null) {
-                pageUsers = userRepository.findAll(paging);
-            } else {
-                pageUsers = userRepository.searchUser(username, paging);
-            }
-            users = pageUsers.getContent().stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());;
-            Map<String, Object> response = new HashMap<>();
-            response.put("users", users);
-            response.put("currentPage", pageUsers.getNumber());
-            response.put("totalItems", pageUsers.getTotalElements());
-            response.put("totalPages", pageUsers.getTotalPages());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        com.nta.teabreakorder.common.Pageable pageable = Pageable.ofValue(page, pageSize, searchData, sortData, null);
+        return userService.get(pageable);
     }
 
 
@@ -86,20 +72,13 @@ public class UserController {
         return userService.getAll();
     }
 
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<User> getUserById(HttpServletRequest request)
-            throws ResourceNotFoundException {
-        String token = null;
-        String headerAuth = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            token = headerAuth.substring(7, headerAuth.length());
-        }
-        String username = jwtUtils.getUserNameFromJwtToken(token);
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return ResponseEntity.ok().body(user);
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getUserById(@PathVariable Long id)
+            throws Exception {
+       return userService.getById(id);
     }
 
     @PutMapping("")

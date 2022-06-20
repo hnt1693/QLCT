@@ -8,7 +8,7 @@ public class DaoUtils {
     public static Map<String, String> getSearchDataFromParam(String searchData) {
         Map<String, String> searchMap = new HashMap<>();
         try {
-            String[] searchArray = searchData.split(",");
+            String[] searchArray = searchData.split("&");
             String[] tempData;
             for (int i = 0; i < searchArray.length; i++) {
                 tempData = searchArray[i].split("=");

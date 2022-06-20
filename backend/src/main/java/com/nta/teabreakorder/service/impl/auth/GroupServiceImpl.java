@@ -59,4 +59,9 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.deleteAllById(ids);
         return CommonUtil.createResponseEntityOK(true);
     }
+
+    @Override
+    public ResponseEntity getAll() {
+        return CommonUtil.createResponseEntityOK(groupRepository.findAll());
+    }
 }

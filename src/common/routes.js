@@ -1,6 +1,6 @@
 import MenuManager from "../components/ui/menu-manager";
 import GroupManager from "../components/auth/group-manager";
-import UserManager from "../components/user-manager";
+import UserManager from "../components/auth/user-manager";
 
 
 const routes = {

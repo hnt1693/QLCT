@@ -1,10 +1,11 @@
 package com.nta.teabreakorder.service;
 
+import com.nta.teabreakorder.model.auth.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface UserService{
+public interface UserService extends CommonService<User>{
 
     ResponseEntity changePassword(String password) throws Exception;
 
@@ -13,8 +14,5 @@ public interface UserService{
     ResponseEntity deletesUser(List<Long> ids) throws Exception;
 
     ResponseEntity getAll() throws Exception;
-
-
-
 
 }

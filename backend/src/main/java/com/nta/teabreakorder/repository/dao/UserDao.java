@@ -3,19 +3,18 @@ package com.nta.teabreakorder.repository.dao;
 import com.nta.teabreakorder.common.DaoUtils;
 import com.nta.teabreakorder.common.Pageable;
 import com.nta.teabreakorder.model.auth.Group;
+import com.nta.teabreakorder.model.auth.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
-public class GroupDao implements CommonDao<Group> {
+public class UserDao implements CommonDao<User>{
 
     @Autowired
     private EntityManager entityManager;
@@ -29,41 +28,36 @@ public class GroupDao implements CommonDao<Group> {
         Map<String, String> sortMap = null;
         List<String> filterList = null;
         String id = null;
-        String name = null;
+        String username = null;
         String regex = null;
 
         if (pageable.getSearchData() != null) {
             searchMap = DaoUtils.getSearchDataFromParam(pageable.getSearchData());
         }
 
-        sql.append("select gr from Group gr ");
-        sql.append(" WHERE gr.id is not null ");
+        sql.append("select u from User u ");
+        sql.append(" WHERE u.id is not null ");
 
         if (searchMap != null) {
             id = searchMap.get("id");
             if (id != null) {
                 sql.append(" AND o.id = :id ");
             }
-            name = searchMap.get("name");
-            if (name != null) {
-                sql.append(" AND LOWER(gr.groupName) like LOWER(CONCAT('%',:name,'%')) ");
-            }
-
-            regex = searchMap.get("regex");
-            if (regex != null) {
-                sql.append(" AND LOWER(gr.regex) like LOWER(CONCAT('%',:regex,'%')) ");
+            username = searchMap.get("username");
+            if (username != null) {
+                sql.append(" AND LOWER(u.username) like LOWER(CONCAT('%',:username,'%')) ");
             }
 
         }
 
         String sortData = null;
         if (pageable.getSortData() != null) {
-            sortData = DaoUtils.covertSortDataToStringByAlias(pageable.getSortData(), "gr");
+            sortData = DaoUtils.covertSortDataToStringByAlias(pageable.getSortData(), "u");
             sortMap = DaoUtils.getSortMapFormParam(pageable.getSortData());
         }
-        sql.append(String.format(" ORDER BY %s", sortData != null ? sortData : "gr.id "));
+        sql.append(String.format(" ORDER BY %s", sortData != null ? sortData : "u.id "));
 
-        TypedQuery<Group> query = entityManager.createQuery(sql.toString(), Group.class);
+        TypedQuery<User> query = entityManager.createQuery(sql.toString(), User.class);
 
         if (pageable.getFields() != null) {
             filterList = DaoUtils.getFieldsFilter(pageable.getFields());
@@ -75,11 +69,8 @@ public class GroupDao implements CommonDao<Group> {
             if (id != null) {
                 query.setParameter("id", Long.valueOf(id));
             }
-            if (regex != null) {
-                query.setParameter("regex", regex);
-            }
-            if (name != null) {
-                query.setParameter("name", name);
+            if (username != null) {
+                query.setParameter("username", username);
             }
 
         }
@@ -91,7 +82,7 @@ public class GroupDao implements CommonDao<Group> {
         resMap.put("pagination", pageable);
 
         query.setFirstResult(pageable.getPage()* pageable.getPageSize()).setMaxResults(pageable.getPageSize());
-        List<Group> objects = query.getResultList();
+        List<User> objects = query.getResultList();
 
         resMap.put("data", objects);
         return resMap;
@@ -102,52 +93,45 @@ public class GroupDao implements CommonDao<Group> {
 
         StringBuilder sql = new StringBuilder();
         Map<String, String> searchMap = null;
+        Map<String, String> sortMap = null;
+        List<String> filterList = null;
         String id = null;
-        String name = null;
+        String username = null;
         String regex = null;
-
 
         if (pageable.getSearchData() != null) {
             searchMap = DaoUtils.getSearchDataFromParam(pageable.getSearchData());
         }
 
-        sql.append("select count(*) from `groups` gr ");
-        sql.append(" WHERE gr.id is not null ");
-
+        sql.append("select count(u) from User u ");
+        sql.append(" WHERE u.id is not null ");
 
         if (searchMap != null) {
             id = searchMap.get("id");
             if (id != null) {
                 sql.append(" AND o.id = :id ");
             }
-            name = searchMap.get("name");
-            if (name != null) {
-                sql.append(" AND LOWER(gr.name) like LOWER(CONCAT('%',:name,'%')) ");
-            }
-
-            regex = searchMap.get("regex");
-            if (regex != null) {
-                sql.append(" AND LOWER(gr.regex) like LOWER(CONCAT('%',:regex,'%')) ");
+            username = searchMap.get("username");
+            if (username != null) {
+                sql.append(" AND LOWER(u.username) like LOWER(CONCAT('%',:username,'%')) ");
             }
 
         }
 
-        Query query = entityManager.createNativeQuery(sql.toString());
+
+        TypedQuery<Long> query = entityManager.createQuery(sql.toString(), Long.class);
+
 
         if (searchMap != null) {
             if (id != null) {
                 query.setParameter("id", Long.valueOf(id));
             }
-            if (regex != null) {
-                query.setParameter("regex", regex);
-            }
-            if (name != null) {
-                query.setParameter("name", name);
+            if (username != null) {
+                query.setParameter("username", username);
             }
 
         }
 
-        return  Long.parseLong(query.getSingleResult().toString());
-
+        return Long.parseLong(query.getSingleResult().toString());
     }
 }

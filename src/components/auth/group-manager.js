@@ -43,6 +43,8 @@ function GroupManager(props) {
         pageSize: 10,
         current: 1,
         pageSizeChangeResetCurrent: true,
+        searchData: null,
+        sortData: null
     });
     const [loadingGroups, setLoadingGroups] = useState(false);
     const [usersInGroup, setUsersInGroup] = useState([]);
@@ -57,16 +59,22 @@ function GroupManager(props) {
                     let res = null;
                     if (modalConfig.mode === 0) {
                         res = await groupService.createGroup({...group, id: 0, userIds: usersInGroup});
-                    }else{
+                    } else {
                         res = await groupService.updateGroup({...group, id: 0, userIds: usersInGroup});
                     }
                     if (res.status === 200) {
-                        Notification.success({title: modalConfig.mode===0? 'Add group':'Edit group', content: 'Successfully!'});
+                        Notification.success({
+                            title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
+                            content: 'Successfully!'
+                        });
                         getGroups(null);
                         setAddGroupVisible(false);
                     }
                 } catch (e) {
-                    Notification.error({title:  modalConfig.mode===0? 'Add group':'Edit group', content: 'Failed!'});
+                    Notification.error({
+                        title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
+                        content: 'Failed!'
+                    });
                 } finally {
                     setLoadingAddGroupModal(false);
                 }
@@ -173,7 +181,7 @@ function GroupManager(props) {
     const getGroups = async (searchObject) => {
         try {
             setLoadingGroups(true);
-            const res = await groupService.getGroups(searchObject);
+            const res = await groupService.getGroupsPagination(searchObject);
             if (res.status === 200) {
                 setData(res.data.data);
                 setPagination({
@@ -183,6 +191,8 @@ function GroupManager(props) {
                     pageSize: res.data.pagination.pageSize,
                     current: res.data.pagination.page + 1,
                     pageSizeChangeResetCurrent: true,
+                    search: res.data.pagination.search,
+                    sort: res.data.pagination.sort
                 })
             }
         } catch (e) {
@@ -193,21 +203,19 @@ function GroupManager(props) {
     }
 
     useEffect(() => {
-        getGroups(null);
+        getGroups(pagination);
         getUsers();
     }, [])
 
 
     function onChangeTable(pagination, sorter) {
         const {current, pageSize} = pagination;
+        console.log(sorter)
         setLoadingGroups(true);
         setTimeout(() => {
-            // setData(allData.slice((current - 1) * pageSize, current * pageSize));
-            // setPagination((pagination) => ({
-            //     ...pagination,
-            //     current,
-            //     pageSize,
-            // }));
+            if (pagination) {
+                getGroups({...pagination, current, pageSize})
+            }
             setLoadingGroups(false);
         }, 1000);
     }
@@ -223,7 +231,7 @@ function GroupManager(props) {
                         style={{width: 350}}
                         size={"default"}
                         searchButton
-                        onSearch={event => console.log(event)}
+                        onSearch={event => getGroups({...pagination, search: {name: event}})}
                     />
                     <Space style={{flex: 1}}>
                         {

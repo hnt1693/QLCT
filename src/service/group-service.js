@@ -1,10 +1,15 @@
 import axios from "axios";
+import {extractPaginationToParams} from "../common/utils";
 
 const API_URL = process.env.REACT_APP_BASE_URL + '/auth/';
 
-const getGroups = (searchObject) => {
-    return axios.get(API_URL + "groups",);
+const getGroupsPagination = (pagination) => {
+    return axios.get(API_URL + "groups",{params: extractPaginationToParams(pagination)});
 };
+const getGroups = () => {
+    return axios.get(API_URL + "groups/all",);
+};
+
 
 const getById = (id) => {
     return axios.get(API_URL + "groups/" + id);
@@ -26,5 +31,5 @@ const deletes = (ids) => {
 
 
 export default {
-    getGroups, createGroup, updateGroup, deletes, getById
+    getGroups, createGroup, updateGroup, deletes, getById, getGroupsPagination
 };

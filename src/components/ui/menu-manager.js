@@ -48,6 +48,7 @@ const generatorTreeNodes = (treeData) => {
 MenuManager.propTypes = {};
 
 function MenuManager(props) {
+    const [loadingGroups, setLoadingGroups] = useState(false);
     const [roles, setRoles] = useState([]);
     const [data, setData] = useState([]);
     const [currentMenu, setCurrentMenu] = useState(null);
@@ -57,7 +58,6 @@ function MenuManager(props) {
     const [modalConfig, setModalConfig] = useState({mode: null, currentMenu: null, parentMenu: null});
     const [iconForm, setIconForm] = useState(null);
     const [form] = Form.useForm();
-
     const [pagination, setPagination] = useState({
         sizeCanChange: true,
         showTotal: true,
@@ -65,8 +65,10 @@ function MenuManager(props) {
         pageSize: 10,
         current: 1,
         pageSizeChangeResetCurrent: true,
+        search:null,
+        sort:null
     });
-    const [loadingGroups, setLoadingGroups] = useState(false);
+
     const [usersInGroup, setUsersInGroup] = useState([]);
 
 
@@ -287,14 +289,16 @@ function MenuManager(props) {
             const res = await menuService.getMenus(searchObject);
             if (res.status === 200) {
                 setData(res.data.data);
-                // setPagination({
-                //     sizeCanChange: true,
-                //     showTotal: true,
-                //     total: res.data.pagination.total,
-                //     pageSize: res.data.pagination.pageSize,
-                //     current: res.data.pagination.page + 1,
-                //     pageSizeChangeResetCurrent: true,
-                // })
+                setPagination({
+                    sizeCanChange: true,
+                    showTotal: true,
+                    total: res.data.pagination.total,
+                    pageSize: res.data.pagination.pageSize,
+                    current: res.data.pagination.page + 1,
+                    pageSizeChangeResetCurrent: true,
+                    search: res.data.pagination.search,
+                    sort: res.data.pagination.sort
+                })
             }
         } catch (e) {
             console.log(e)

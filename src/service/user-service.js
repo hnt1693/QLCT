@@ -1,9 +1,10 @@
 import axios from "axios";
+import {extractPaginationToParams} from "../common/utils";
 
 const API_URL = process.env.REACT_APP_BASE_URL + '/users/';
 
-const getGroups = (searchObject) => {
-    return axios.get(API_URL + "",);
+const getAllPagination = (pagination) => {
+    return axios.get(API_URL + "", {params: extractPaginationToParams(pagination)});
 };
 
 const getAllUsers = () => {
@@ -14,10 +15,10 @@ const getById = (id) => {
     return axios.get(API_URL + "" + id);
 };
 
-const createGroup = (group) => {
+const create = (group) => {
     return axios.post(API_URL + "", group);
 };
-const updateGroup = (group) => {
+const update = (group) => {
     return axios.put(API_URL + "", group);
 };
 const deletes = (ids) => {
@@ -30,5 +31,6 @@ const deletes = (ids) => {
 
 
 export default {
-    getAllUsers
+    getAllUsers, getAllPagination, create, update, deletes,
+    getById
 };

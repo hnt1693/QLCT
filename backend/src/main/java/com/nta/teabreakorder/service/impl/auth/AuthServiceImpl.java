@@ -10,6 +10,7 @@ import com.nta.teabreakorder.repository.auth.UserRepository;
 import com.nta.teabreakorder.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,19 +31,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity registerNewUser(UserRegisterRequest userRequest) throws Exception {
-        List<Long> ids = new ArrayList<>();
-        if (userRequest.getGroups() == null || userRequest.getGroups().isEmpty()) {
-            throw new Exception("Group not valid" );
-        }
-        userRequest.getGroups().forEach(ob -> {
-            ids.add(ob.getId());
-        });
-        List<Group> groups = groupRepository.findAllById(ids);
+
         User user = new User();
         user.setEmail(userRequest.getEmail());
         user.setUsername(userRequest.getUsername());
         user.setFullName(userRequest.getFullName());
-        user.setGroups(groups);
+        if (userRequest.getGroups() != null && !userRequest.getGroups().isEmpty()) {
+            List<Long> ids = new ArrayList<>();
+            userRequest.getGroups().forEach(ob -> {
+                ids.add(ob.getId());
+            });
+            List<Group> groups = groupRepository.findAllById(ids);
+            user.setGroups(groups);
+        }
+
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRepository.save(user);
         return CommonUtil.createResponseEntityOK(user);
