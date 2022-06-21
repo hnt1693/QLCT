@@ -284,6 +284,7 @@ function GroupManager(props) {
                 />
             </Grid.Col>
             <Modal
+                style={{width:600}}
                 title={modalConfig.mode === 0 ? 'Add Group' : 'Edit group'}
                 visible={modalVisible}
                 onOk={submitFormGroup}
@@ -388,7 +389,7 @@ function renderUser(user) {
                     </Grid.Col>
                     <Grid.Col span={19}>
                         <div style={{display: "flex", flexDirection: "column"}}>
-                            <Typography.Text style={{fontWeight: 600}}>{user.fullName}</Typography.Text>
+                            <Typography.Text style={{fontWeight: 550}}>{user.fullName}</Typography.Text>
                             <Typography.Text><i className="fa-solid fa-circle-info"></i> {user.username}
                             </Typography.Text>
                             <Typography.Text style={{fontSize: 13}}> <i className="fa-solid fa-at"></i> {user.email}

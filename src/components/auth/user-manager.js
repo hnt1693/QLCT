@@ -281,7 +281,7 @@ function UserManager(props) {
         } else {
             form.resetFields();
         }
-
+        setErrorMessage(null);
     }, [modalConfig])
 
     const submitFormGroup = async () => {

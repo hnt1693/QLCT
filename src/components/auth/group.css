@@ -4,5 +4,9 @@
 
 .arco-transfer-view{
     height: 350px !important;
+    flex:1 !important;
 }
 
+.arco-transfer{
+    flex:1
+}

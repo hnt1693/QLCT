@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class Group {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
     private List<Long> userIds = new ArrayList<>();
+
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
