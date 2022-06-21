@@ -21,6 +21,11 @@ const create = (group) => {
 const update = (group) => {
     return axios.put(API_URL + "", group);
 };
+
+const getInfo = () => {
+    return axios.get(API_URL + "info");
+};
+
 const deletes = (ids) => {
     return axios({
         url: API_URL + "",
@@ -32,5 +37,5 @@ const deletes = (ids) => {
 
 export default {
     getAllUsers, getAllPagination, create, update, deletes,
-    getById
+    getById, getInfo
 };

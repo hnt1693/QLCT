@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Card, Grid, Image, Space} from '@arco-design/web-react';
-import {Form, Input, Checkbox, Button, Radio,Notification} from '@arco-design/web-react';
+import {Alert, Card, Grid, Image, Space} from '@arco-design/web-react';
+import {Form, Input, Checkbox, Button, Radio, Notification} from '@arco-design/web-react';
 import PropTypes from 'prop-types';
 import {IconPlayArrow, IconUnlock, IconUser} from "@arco-design/web-react/icon";
 import './login.css'
@@ -22,6 +22,13 @@ function Login(props) {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const currentUser = useSelector(state => state.user.currentUser);
+    const [errorMessage, setErrorMessage] = useState(null)
+    const validateRules = {
+        username: [{required: true, message: "Required"},
+            {match: new RegExp("^[a-zA-Z0-9]+$"), message: "Not contain special characters"}],
+        password: [{required: true, message: "Required"}]
+    }
+
 
     const handleLogin = async (e) => {
         setLoading(true);
@@ -31,15 +38,15 @@ function Login(props) {
                 setTimeout(() => {
                     setLoading(false)
                     dispatch(setUser(res.data));
-                    Notification.success({ title: 'LOGIN', content: 'This is a success Notification!' });
+                    setErrorMessage(null)
+                    Notification.success({title: 'LOGIN', content: 'This is a success Notification!'});
                 }, 3000)
             }
         } catch (e) {
             setTimeout(() => {
-
-                console.log(e.response)
                 setLoading(false);
-                Notification.error({ title: 'LOGIN', content: e.response.data.message });
+                setErrorMessage(e.response.data.message)
+                Notification.error({title: 'LOGIN', content: e.response.data.message});
             }, 3000)
         }
 
@@ -58,20 +65,28 @@ function Login(props) {
                         </div>
                         <Form onSubmit={e => handleLogin(e)}>
                             <Space wrap direction={"vertical"}>
-                                <FormItem field='username' rules={[{required: true, message: "Required"}]} hasFeedback>
+                                <FormItem field='username' rules={validateRules.username} hasFeedback>
                                     <Input placeholder='please enter your name' prefix={<IconUser/>}/>
                                 </FormItem>
                                 <FormItem field={"password"}
-                                          rules={[{required: true, message: "Required"}]}>
+                                          rules={validateRules.password}>
                                     <Input.Password prefix={<IconUnlock/>}
                                     />
                                 </FormItem>
                                 {/*<FormItem wrapperCol={{offset: 5}}>*/}
                                 {/*    <Checkbox>I have read the manual</Checkbox>*/}
                                 {/*</FormItem>*/}
+
+
                                 <FormItem>
                                     <Button type='primary' htmlType='submit'>LOGIN</Button>
                                 </FormItem>
+                                <Grid.Row align={"center"} style={{height: 60}}>
+                                    <Grid.Col align={"center"} span={19}>
+                                        {errorMessage && <Alert type='error' content={errorMessage}/>}
+                                    </Grid.Col>
+
+                                </Grid.Row>
                             </Space>
 
                         </Form>

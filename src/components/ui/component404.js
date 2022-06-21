@@ -14,7 +14,7 @@ function Component404(props) {
         <Result
             style={{height:'50vh',paddingTop:'30vh'}}
             status='404'
-            subTitle='Access to this resource on the server is denied.'
+            subTitle='Access to this resource on the server is failed. Page not found'
             extra={ <Button type='primary' onClick={e=>navigate("/dashboard",{replace:true})}>Back to HomePage</Button>}
         >
         </Result>

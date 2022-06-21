@@ -289,16 +289,7 @@ function MenuManager(props) {
             const res = await menuService.getMenus(searchObject);
             if (res.status === 200) {
                 setData(res.data.data);
-                setPagination({
-                    sizeCanChange: true,
-                    showTotal: true,
-                    total: res.data.pagination.total,
-                    pageSize: res.data.pagination.pageSize,
-                    current: res.data.pagination.page + 1,
-                    pageSizeChangeResetCurrent: true,
-                    search: res.data.pagination.search,
-                    sort: res.data.pagination.sort
-                })
+                setPagination({...pagination,total: 1})
             }
         } catch (e) {
             console.log(e)
@@ -498,10 +489,13 @@ function MenuManager(props) {
                     <FormItem
                         label='Path'
                         required
+
                         field='path'
                         rules={[{type: 'array', minLength: 0}]}
                     >
                         <Select
+                            allowCreate
+                            showSearch
                             mode='single'
                             placeholder='please select'
                             options={Object.keys(route)}

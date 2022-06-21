@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Button,
+    Alert, Avatar,
+    Button, Divider, Drawer, Empty,
     Form,
-    Grid,
+    Grid, Image,
     Input,
     Modal,
     Notification,
     Popconfirm,
     Space,
-    Table,
-    Transfer
+    Table, Tooltip,
+    Transfer, Typography
 } from "@arco-design/web-react";
 import groupService from '../../service/group-service'
 import userService from '../../service/user-service'
@@ -30,6 +31,8 @@ const formItemLayout = {
 
 function GroupManager(props) {
     const [data, setData] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [modalVisible, setAddGroupVisible] = useState(false);
     const [loadingModal, setLoadingAddGroupModal] = useState(false);
@@ -71,6 +74,7 @@ function GroupManager(props) {
                         setAddGroupVisible(false);
                     }
                 } catch (e) {
+                    setErrorMessage(e.response.data.message)
                     Notification.error({
                         title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
                         content: 'Failed!'
@@ -98,9 +102,12 @@ function GroupManager(props) {
 
 
     useEffect(() => {
-        if (modalConfig.mode !== null) {
+        if ([0, 1].includes(modalConfig.mode)) {
             setAddGroupVisible(true);
+        } else if (modalConfig.mode === 2) {
+            setDrawerVisible(true);
         } else {
+            setDrawerVisible(false)
             setAddGroupVisible(false);
         }
         if (modalConfig.currentGroup) {
@@ -112,14 +119,14 @@ function GroupManager(props) {
             form.resetFields();
             setUsersInGroup([]);
         }
-
+        setErrorMessage(null)
     }, [modalConfig])
 
-    const getCurrentGroup = async (key) => {
+    const getCurrentGroup = async (key, mode) => {
         try {
             const res = await groupService.getById(key);
             if (res.status === 200) {
-                setModalConfig({mode: 1, currentGroup: res.data.data})
+                setModalConfig({mode: mode, currentGroup: res.data.data})
 
             }
         } catch (e) {
@@ -144,7 +151,6 @@ function GroupManager(props) {
     }
 
     const columns = [
-
         {
             title: 'Name',
             dataIndex: 'groupName',
@@ -160,20 +166,30 @@ function GroupManager(props) {
             width: 250,
             align: 'center',
             render: (key) => <Space>
-                <Button type='primary' status={"success"} size={"small"} icon={<i className="fa-solid fa-marker"></i>}
-                        onClick={e => {
-                            getCurrentGroup(key);
-                        }}/>
-                <Popconfirm
-                    position={"bottom"}
-                    title='Are you sure you want to delete?'
-                    onOk={() => deleteGroups(key)}
-                >
-                    <Button type='primary' status={"danger"} size={"small"}
-                            icon={<i className="fa-solid fa-trash-can"></i>}/>
-                </Popconfirm>
-                <Button type='primary' status={"default"} size={"small"}
-                        icon={<i className="fa-solid fa-people-roof"></i>} onClick={e => alert(key)}/>
+                <Tooltip content={"Edit group"}>
+                    <Button type='primary' status={"success"} size={"small"}
+                            icon={<i className="fa-solid fa-marker"></i>}
+                            onClick={e => {
+                                getCurrentGroup(key, 1);
+                            }}/>
+                </Tooltip>
+                <Tooltip content={"Delete group"}>
+                    <Popconfirm
+                        position={"bottom"}
+                        title='Are you sure you want to delete?'
+                        onOk={() => deleteGroups(key)}
+                    >
+
+                        <Button type='primary' status={"danger"} size={"small"}
+                                icon={<i className="fa-solid fa-trash-can"></i>}/>
+                    </Popconfirm>
+                </Tooltip>
+                <Tooltip content={"View users"}>
+                    <Button type='primary' status={"default"} size={"small"}
+                            icon={<i className="fa-solid fa-people-roof"></i>}
+                            onClick={e => getCurrentGroup(key, 2)}/>
+                </Tooltip>
+
             </Space>,
         }
     ];
@@ -210,7 +226,6 @@ function GroupManager(props) {
 
     function onChangeTable(pagination, sorter) {
         const {current, pageSize} = pagination;
-        console.log(sorter)
         setLoadingGroups(true);
         setTimeout(() => {
             if (pagination) {
@@ -321,13 +336,70 @@ function GroupManager(props) {
                             targetKeys={usersInGroup}
                             titleTexts={['All user', 'User in group']}
                         />
+
                     </div>
+                    <Grid.Row align={"center"} style={{height: 40, overflow: 'hidden', marginTop: 10}}>
+                        <Grid.Col align={"center"} span={24}>
+                            {errorMessage && <Alert type='error' content={errorMessage}/>}
+                        </Grid.Col>
+
+                    </Grid.Row>
+
                 </Form>
             </Modal>
+            <Drawer
+                width={400}
+                title={<span>{modalConfig.currentGroup?.groupName} </span>}
+                visible={drawerVisible}
+                onOk={() => {
+                    setModalConfig({mode: null, currentGroup: null});
+                }}
+                onCancel={() => {
+                    setModalConfig({mode: null, currentGroup: null});
+                }}
+            >
 
+                {modalConfig.currentGroup?.users.map((u, key) => renderUser(u))}
+                {modalConfig.currentGroup?.users.length>0 && <Divider/>}
+                {modalConfig.currentGroup?.users.length>0 && <div style={{textAlign:"right"}}>
+                    <Typography.Text style={{fontSize:15}} type={"primary"}>Total: {modalConfig.currentGroup?.users.length}</Typography.Text>
+                </div>}
+                {modalConfig.currentGroup?.users.length === 0 && <Empty description={"Không có user nào cả"}/>}
+            </Drawer>
         </Grid.Row>
     );
 
+}
+
+
+function renderUser(user) {
+    return <div>
+        <Alert
+            style={{marginBottom: 5}}
+            showIcon={false}
+            type='info'
+            content={
+                <Grid.Row align={"center"}>
+                    <Grid.Col span={5} align={"center"}>
+                        <Avatar>
+                            <Image width={160} style={{borderRadius: '50%'}} alt='avatar' preview={false}
+                                   src={process.env.REACT_APP_BASE_URL + "/files/" + user.img}/>
+                        </Avatar>
+                    </Grid.Col>
+                    <Grid.Col span={19}>
+                        <div style={{display: "flex", flexDirection: "column"}}>
+                            <Typography.Text style={{fontWeight: 600}}>{user.fullName}</Typography.Text>
+                            <Typography.Text><i className="fa-solid fa-circle-info"></i> {user.username}
+                            </Typography.Text>
+                            <Typography.Text style={{fontSize: 13}}> <i className="fa-solid fa-at"></i> {user.email}
+                            </Typography.Text>
+                        </div>
+                    </Grid.Col>
+                </Grid.Row>
+            }/>
+
+
+    </div>
 }
 
 

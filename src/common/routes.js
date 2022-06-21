@@ -1,12 +1,14 @@
 import MenuManager from "../components/ui/menu-manager";
 import GroupManager from "../components/auth/group-manager";
 import UserManager from "../components/auth/user-manager";
+import Dashboard from "../components/dashboard";
 
 
 const routes = {
     menus: <MenuManager/>,
     groups: <GroupManager/>,
     users: <UserManager/>,
+    dashboard: <Dashboard/>,
 }
 
 const combineRoute = (backendRoutes) => {

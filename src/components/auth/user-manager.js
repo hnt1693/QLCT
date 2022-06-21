@@ -11,7 +11,7 @@ import {
     Table,
     Tooltip,
     Upload,
-    Notification, Select, Image as Img
+    Notification, Select, Image as Img, Alert
 } from '@arco-design/web-react';
 import userService from "../../service/user-service";
 import authService from "../../service/auth-service";
@@ -78,6 +78,7 @@ EasyCropper.propTypes = {
 function UserManager(props) {
     const currentUser = useSelector(state => state.user.currentUser);
     const [groups, setGroups] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [form] = Form.useForm();
     const [data, setData] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -94,10 +95,33 @@ function UserManager(props) {
         sort: null
     });
     const [loading, setLoading] = useState(false);
-    const [loadingGroups, setLoadingGroups] = useState(false);
+    const [loadingUser, setLoadingUsers] = useState(false);
     const [modalConfig, setModalConfig] = useState({mode: null, currentGroup: null});
     const [loadingModal, setLoadingAddGroupModal] = useState(false);
 
+    const validateRules = {
+        username: [
+            {required: true, message: "Required"},
+            {match: new RegExp("^[a-zA-Z0-9]+$"), message: "Not contain special characters"},
+            {minLength: 6, message: "Valid 6-40 characters"},
+            {maxLength: 40, message: "Valid 6-40 characters"}],
+        password: [],
+        passwordAddUser: [
+            {required: true},
+            {minLength: 6, message: "Valid 6-40 characters"},
+            {maxLength: 40, message: "Valid 6-40 characters"}
+            ],
+        fullName: [
+            {required: true, message: "Required"},
+            {minLength: 6, message: "Valid 6-40 characters"},
+            {maxLength: 40, message: "Valid 6-40 characters"},
+        ],
+        email: [{
+            match: new RegExp("^([a-zA-Z0-9\\.])+@([a-zA-Z0-9]+\\.){1,2}([a-zA-Z0-9]+){1}$"),
+            message: "Email not valid"
+        }],
+        groups: [{type: 'array'}]
+    }
 
     const columns = [
         {
@@ -201,7 +225,7 @@ function UserManager(props) {
 
     const getUsers = async (pagination) => {
         try {
-            setLoadingGroups(true);
+            setLoadingUsers(true);
             const res = await userService.getAllPagination(pagination);
             if (res.status === 200) {
                 setData(res.data.data);
@@ -219,7 +243,7 @@ function UserManager(props) {
         } catch (e) {
             console.log(e)
         } finally {
-            setLoadingGroups(false)
+            setLoadingUsers(false)
         }
     }
 
@@ -271,12 +295,12 @@ function UserManager(props) {
                         res = await authService.register({
                             ...user,
                             id: 0,
-                            groups: form.getFieldValue("groups").map(g => ({key: g}))
+                            groups: form.getFieldValue("groups")?.map(g => ({key: g}))
                         });
                     } else {
                         res = await userService.update({
                             ...user,
-                            groups: form.getFieldValue("groups").map(g => ({key: g}))
+                            groups: form.getFieldValue("groups")?.map(g => ({key: g}))
                         });
                     }
                     if (res.status === 200) {
@@ -289,6 +313,7 @@ function UserManager(props) {
                     }
                 } catch (e) {
                     console.log(e)
+                    setErrorMessage(e.response.data.message);
                     Notification.error({
                         title: modalConfig.mode === 0 ? 'Add User' : 'Edit User',
                         content: 'Failed!'
@@ -307,7 +332,6 @@ function UserManager(props) {
         } else {
             form.setFieldValue("img", null);
         }
-        console.log(file)
     }, [file])
 
     function onChangeTable(pagination, sorter) {
@@ -385,30 +409,29 @@ function UserManager(props) {
                         {...formItemLayout}
                         form={form}
                     >
-                        <FormItem label='Id' hidden  field='key'>
-                            <Input placeholder='' />
-                        </FormItem>
-                        <FormItem label='Username' field='username' rules={[{required: true}]}>
-                            <Input placeholder='' readOnly={modalConfig.mode===1}/>
-                        </FormItem>
-                        <FormItem label='Name' field='fullName' rules={[{required: true}]}>
+                        <FormItem label='Id' hidden field='key'>
                             <Input placeholder=''/>
                         </FormItem>
-                        <FormItem label='Email' field='email' rules={[{required: true}]}>
+                        <FormItem label='Username' field='username' rules={validateRules.username}>
+                            <Input placeholder='' readOnly={modalConfig.mode === 1}/>
+                        </FormItem>
+                        <FormItem label='Name' field='fullName' rules={validateRules.fullName}>
                             <Input placeholder=''/>
                         </FormItem>
-                        <FormItem label='Email' field='img' hidden>
+                        <FormItem label='Email' field='email' rules={validateRules.email}>
+                            <Input placeholder=''/>
+                        </FormItem>
+                        <FormItem field='img' hidden>
                             <Input placeholder=''/>
                         </FormItem>
                         {modalConfig.mode === 0 &&
-                        <FormItem label='Password' field='password' rules={[{required: true}]}>
+                        <FormItem label='Password' field='password' rules={modalConfig.mode===0?validateRules.passwordAddUser:validateRules.password}>
                             <Input.Password placeholder='Keep with empty'/>
                         </FormItem>}
                         <FormItem
                             label='Groups'
-                            required
                             field='groups'
-                            rules={[{type: 'array'}]}
+                            rules={validateRules.groups}
                         >
                             <Select
                                 showSearch
@@ -423,11 +446,12 @@ function UserManager(props) {
                         </FormItem>
                         <Grid.Row align='center'>
                             <Grid.Col span={5} align={"center"}>
-                                <Img width={'80%'} style={{borderRadius: '50%'}} alt='avatar'  preview={false} src={ process.env.REACT_APP_BASE_URL + "/files" + "/" + modalConfig.currentUser?.img}/>
+                                <Img width={'80%'} style={{borderRadius: '50%'}} alt='avatar' preview={false}
+                                     src={process.env.REACT_APP_BASE_URL + "/files" + "/" + modalConfig.currentUser?.img}/>
                             </Grid.Col>
                             <Grid.Col span={19}>
                                 <Upload
-                                    style={{width:'100%'}}
+                                    style={{width: '100%'}}
                                     listType='picture-card'
                                     multiple={false}
                                     limit={1}
@@ -526,6 +550,12 @@ function UserManager(props) {
                                         )}
                                     </div>
                                 </Upload>
+                                <Grid.Row align={"center"} style={{ overflow:'hidden', margin: '10px 0'}}>
+                                    <Grid.Col align={"center"} span={24}>
+                                        {errorMessage && <Alert type='error' content={errorMessage}/>}
+                                    </Grid.Col>
+
+                                </Grid.Row>
                             </Grid.Col>
 
                         </Grid.Row>

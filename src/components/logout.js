@@ -11,7 +11,6 @@ function Logout(props) {
     const navigate = useNavigate();
     useEffect(() => {
         dispatch(setUser(null));
-        // navigate("/login",{replace: true})
     }, [])
 
     return (

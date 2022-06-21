@@ -17,6 +17,8 @@ import Component403 from "./components/ui/compent403";
 import menuService from './service/menu-service'
 import {combineRoutes} from "./common/routes";
 import Component404 from "./components/ui/component404";
+import userService from './service/user-service'
+import {getUserInfo, setUser} from "./redux/user-slice";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -45,6 +47,7 @@ function App() {
     }
 
     const renderMenuItem = (item) => {
+        if (!item.activated) return;
         return item.children.length > 0 ? <SubMenu
             key={item.path}
             title={
@@ -69,8 +72,15 @@ function App() {
     }
 
     useEffect(() => {
-        loadMenu();
+        if (currentUser) {
+            getUserInfoApp();
+            loadMenu();
+        }
     }, [])
+
+    const getUserInfoApp = async () => {
+        dispatch(getUserInfo());
+    }
 
     useEffect(() => {
         if (currentUser) {
