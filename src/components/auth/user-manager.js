@@ -23,6 +23,7 @@ import EasyCropper from 'react-easy-crop';
 import './user.css'
 import {UPLOAD_URL} from "../../service/file.service";
 import {useSelector} from "react-redux";
+import {I18n} from 'react-redux-i18n'
 import Avatar from "@arco-design/web-react/es/Avatar/avatar";
 
 const InputSearch = Input.Search;
@@ -313,8 +314,8 @@ function UserManager(props) {
                         setAddGroupVisible(false);
                     }
                 } catch (e) {
-                    console.log(e)
-                    setErrorMessage(e.response.data.message);
+                    console.log(e.response.data)
+                    setErrorMessage(I18n.t("errorCode."+e.response.data.details));
                     Notification.error({
                         title: modalConfig.mode === 0 ? 'Add User' : 'Edit User',
                         content: 'Failed!'

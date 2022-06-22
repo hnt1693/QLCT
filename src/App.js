@@ -40,7 +40,7 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [menu, setMenu] = useState([]);
     const configProvider = useSelector(state => state.configProvider);
-    const I18n = useSelector(state => state.i18n);
+    const i18n = useSelector(state => state.i18n);
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.currentUser);
     const handleCollapsed = () => {
@@ -82,9 +82,13 @@ function App() {
 
     useEffect(()=>{
         if(configProvider.locale){
-            dispatch(setLocale(configProvider.locale))
+            dispatch(setLocale(configProvider.locale));
         }
     },[configProvider])
+
+    useEffect(()=>{
+        console.log(i18n)
+    },[i18n])
 
     const getUserInfoApp = async () => {
         dispatch(getUserInfo());
@@ -101,7 +105,7 @@ function App() {
         navigate(key, {replace: true})
     }
     return (
-        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size} i18n={I18n}>
+        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size} >
             <Layout className='main-layout'>
                 <Header>
                     <div className={"header-container"}>
@@ -152,7 +156,7 @@ function App() {
 }
 
 
-function privateRoute(roles, userRoles, path, element) {
+function privateRoute(roles, userRoles, path, element, i18n) {
 
     if (roles.length > 0) {
         const intersection = roles.filter(val => userRoles.includes(val));

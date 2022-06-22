@@ -5,13 +5,13 @@ import java.util.Date;
 public class ErrorDetails {
     private Date timestamp;
     private String message;
-    private String details;
+    private String code;
 
     public ErrorDetails(Date timestamp, String message, String details) {
          super();
          this.timestamp = timestamp;
          this.message = message;
-         this.details = details;
+         this.code = details;
     }
 
     public Date getTimestamp() {
@@ -23,6 +23,6 @@ public class ErrorDetails {
     }
 
     public String getDetails() {
-         return details;
+         return code;
     }
 }

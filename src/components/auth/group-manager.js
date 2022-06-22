@@ -16,20 +16,23 @@ import groupService from '../../service/group-service'
 import userService from '../../service/user-service'
 import './group.css'
 import {I18n} from 'react-redux-i18n';
+import {useSelector} from "react-redux";
+
 const InputSearch = Input.Search;
 GroupManager.propTypes = {};
 
 const FormItem = Form.Item;
 const formItemLayout = {
     labelCol: {
-        span: 5,
+        span: 6,
     },
     wrapperCol: {
-        span: 19,
+        span: 18,
     },
 };
 
 function GroupManager(props) {
+    const i18 = useSelector(state => state.i18n)
     const [data, setData] = useState([]);
     const [errorMessage, setErrorMessage] = useState(null);
     const [drawerVisible, setDrawerVisible] = useState(false);
@@ -52,6 +55,14 @@ function GroupManager(props) {
     const [loadingGroups, setLoadingGroups] = useState(false);
     const [usersInGroup, setUsersInGroup] = useState([]);
 
+    const validateRules = {
+        groupName: [
+            {required: true, message: I18n.t("pageGroups.validate.groupName.required")},
+            {minLength: 6, message: I18n.t("pageGroups.validate.groupName.maxLength")},
+            {maxLength: 40, message: I18n.t("pageGroups.validate.groupName.minLength")}],
+        regex: [{required: true, message: I18n.t("pageGroups.validate.regex.required")}],
+
+    }
 
     const submitFormGroup = async () => {
         try {
@@ -74,11 +85,11 @@ function GroupManager(props) {
                         setAddGroupVisible(false);
                     }
                 } catch (e) {
-                    setErrorMessage(e.response.data.message)
-                    Notification.error({
-                        title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
-                        content: 'Failed!'
-                    });
+                    setErrorMessage(I18n.t("errorCode." + e.response.data.details))
+                    // Notification.error({
+                    //     title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
+                    //     content: 'Failed!'
+                    // });
                 } finally {
                     setLoadingAddGroupModal(false);
                 }
@@ -242,7 +253,7 @@ function GroupManager(props) {
                 <Space style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                     <InputSearch
                         allowClear
-                        placeholder='Enter keyword to search'
+                        placeholder={I18n.t("pageGroups.placeHolderSearch")}
                         style={{width: 350}}
                         size={"default"}
                         searchButton
@@ -300,10 +311,13 @@ function GroupManager(props) {
                     <FormItem label='Id' hidden field='key'>
                         <Input placeholder='' hidden/>
                     </FormItem>
-                    <FormItem label={I18n.t("pageGroups.modal.groupNameInput")} field='groupName' rules={[{required: true}]}>
+                    <FormItem label={I18n.t("pageGroups.modal.groupNameInput")}
+                              field='groupName'
+                              rules={validateRules.groupName}>
                         <Input placeholder=''/>
                     </FormItem>
-                    <FormItem label={I18n.t("pageGroups.modal.regexInput")} field='regex' rules={[{required: true}]}>
+                    <FormItem label={I18n.t("pageGroups.modal.regexInput")}
+                              field='regex' rules={validateRules.regex}>
                         <Input placeholder=''/>
                     </FormItem>
                     <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end", marginTop: 15}}>
@@ -364,7 +378,8 @@ function GroupManager(props) {
                 {modalConfig.currentGroup?.users.length > 0 && <Divider/>}
                 {modalConfig.currentGroup?.users.length > 0 && <div style={{textAlign: "right"}}>
                     <Typography.Text style={{fontSize: 15}}
-                                     type={"primary"}>Total: {modalConfig.currentGroup?.users.length}</Typography.Text>
+                                     type={"primary"}>{I18n.t("pageGroups.total")}: {modalConfig.currentGroup?.users.length} &nbsp;   &nbsp;
+                        <i className="fa-solid fa-user-large"></i></Typography.Text>
                 </div>}
                 {modalConfig.currentGroup?.users.length === 0 && <Empty description={"Không có user nào cả"}/>}
             </Drawer>

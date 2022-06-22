@@ -159,7 +159,7 @@ function HeaderLayout(props) {
                             </Badge>
                         </Popover>}
 
-                        <Tooltip position='br' trigger='hover' content={darkMode?I18n.t("header.darkMode.off"):I18n.t("darkMode.on")}>
+                        <Tooltip position='br' trigger='hover' content={darkMode?I18n.t("header.darkMode.off"):I18n.t("header.darkMode.on")}>
                             <Switch checkedText={<i className="fa-solid fa-moon"></i>} uncheckedText={<i
                                 className="fa-solid fa-sun"></i>}
                                     onChange={handleChangeDarkMode}/>

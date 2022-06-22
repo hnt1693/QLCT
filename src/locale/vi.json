@@ -35,6 +35,16 @@
     }
   },
   "pageGroups": {
+    "validate": {
+      "groupName": {
+        "required": "Tên nhóm không được trống",
+        "maxLength": "Tên nhóm từ 6-40 ký tự",
+        "minLength": "Tên nhóm từ 6-40 ký tự"
+      },
+      "regex": {
+        "required": "Regex nhóm không được trống"
+      }
+    },
     "editButton": "Chỉnh sửa",
     "deleteButton": "Xóa",
     "viewButton": "Xem danh sách users",
@@ -45,6 +55,14 @@
       "regexInput": "Regex",
       "allUsersTransfer":"Tất cả users",
       "inGroupsUsersTransfer":"Người dùng đã thêm"
-    }
+    },
+    "total": "Tổng",
+    "placeHolderSearch": "Tìm kiếm theo tên nhóm"
+  },
+  "errorCode": {
+    "US01": "Username đã có người sử dụng",
+    "US02": "Email đã có người sử dụng",
+
+    "GR01": "Regex đã được sủ dụng"
   }
 }

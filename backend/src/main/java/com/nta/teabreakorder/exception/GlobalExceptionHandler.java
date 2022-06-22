@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getMostSpecificCause().getMessage();
         String key = errorMessage.split(" key ")[1].replaceAll("\'","");
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), configReader.getValue(key,"Error"), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(new Date(),request.getDescription(false),configReader.getValue(key,"Error"));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

@@ -35,6 +35,16 @@
     }
   },
   "pageGroups": {
+    "validate": {
+      "groupName": {
+        "required": "Tên nhóm không được trống",
+        "maxLength": "Tên đăng nhập từ 6-40 ký tự",
+        "minLength": "Tên đăng nhập từ 6-40 ký tự"
+      },
+      "password": {
+        "required": "Regex nhóm không được trống"
+      }
+    },
     "editButton": "Edit",
     "deleteButton": "Delete",
     "viewButton": "View users in group",
@@ -45,6 +55,14 @@
       "regexInput": "Regex",
       "allUsersTransfer":"All users",
       "inGroupsUsersTransfer":"Users added"
-    }
+    },
+    "total": "Tổng",
+    "placeHolderSearch": "Search by group name"
+  },
+  "errorCode": {
+    "US01": "Username đã có người sử dụng",
+    "US02": "Email đã có người sử dụng",
+
+    "GR01": "Regex đã được sủ dụng"
   }
 }
