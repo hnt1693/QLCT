@@ -7,3 +7,10 @@
     width: 40%;
     margin-bottom: 20px;
 }
+
+.login-container .arco-space-item{
+    height: 55px!important;
+}
+.login-container .arco-form-message{
+    margin-top: 5px!important;
+}

@@ -17,9 +17,8 @@ import Component403 from "./components/ui/compent403";
 import menuService from './service/menu-service'
 import {combineRoutes} from "./common/routes";
 import Component404 from "./components/ui/component404";
-import userService from './service/user-service'
-import {getUserInfo, setUser} from "./redux/user-slice";
-
+import {getUserInfo} from "./redux/user-slice";
+import {setLocale,I18n} from 'react-redux-i18n';
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
@@ -35,16 +34,19 @@ const localeObject = {
 
 
 function App() {
+
     const location = useLocation();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const [menu, setMenu] = useState([]);
     const configProvider = useSelector(state => state.configProvider);
+    const I18n = useSelector(state => state.i18n);
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.user.currentUser);
     const handleCollapsed = () => {
         setCollapsed(!collapsed);
     }
+
 
     const renderMenuItem = (item) => {
         if (!item.activated) return;
@@ -78,6 +80,12 @@ function App() {
         }
     }, [])
 
+    useEffect(()=>{
+        if(configProvider.locale){
+            dispatch(setLocale(configProvider.locale))
+        }
+    },[configProvider])
+
     const getUserInfoApp = async () => {
         dispatch(getUserInfo());
     }
@@ -93,7 +101,7 @@ function App() {
         navigate(key, {replace: true})
     }
     return (
-        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size}>
+        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size} i18n={I18n}>
             <Layout className='main-layout'>
                 <Header>
                     <div className={"header-container"}>
@@ -149,10 +157,10 @@ function privateRoute(roles, userRoles, path, element) {
     if (roles.length > 0) {
         const intersection = roles.filter(val => userRoles.includes(val));
         if (intersection.length !== 0) {
-            return <Route path={path} element={element}/>
+            return <Route path={path} element={element} key={path}/>
         }
     } else {
-        return <Route path={path} element={element}/>
+        return <Route path={path} element={element} key={path}/>
     }
     return <Route key={path} path={path} element={<Component403/>}/>
 

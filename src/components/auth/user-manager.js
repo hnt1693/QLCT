@@ -16,6 +16,7 @@ import {
 import userService from "../../service/user-service";
 import authService from "../../service/auth-service";
 import groupService from "../../service/group-service";
+import fileService from "../../service/file.service";
 import {IconEdit, IconMinus, IconPlus, IconRotateLeft} from "@arco-design/web-react/icon";
 import * as PropTypes from "prop-types";
 import EasyCropper from 'react-easy-crop';
@@ -30,10 +31,10 @@ const InputSearch = Input.Search;
 const FormItem = Form.Item;
 const formItemLayout = {
     labelCol: {
-        span: 5,
+        span: 6,
     },
     wrapperCol: {
-        span: 19,
+        span: 18,
     },
 };
 const headerCellStyle = {
@@ -110,7 +111,7 @@ function UserManager(props) {
             {required: true},
             {minLength: 6, message: "Valid 6-40 characters"},
             {maxLength: 40, message: "Valid 6-40 characters"}
-            ],
+        ],
         fullName: [
             {required: true, message: "Required"},
             {minLength: 6, message: "Valid 6-40 characters"},
@@ -328,7 +329,7 @@ function UserManager(props) {
     }
     useEffect(() => {
         if (file && file.response) {
-            form.setFieldValue("img", file.response);
+            form.setFieldValue("img", file.response.url);
         } else {
             form.setFieldValue("img", null);
         }
@@ -425,7 +426,8 @@ function UserManager(props) {
                             <Input placeholder=''/>
                         </FormItem>
                         {modalConfig.mode === 0 &&
-                        <FormItem label='Password' field='password' rules={modalConfig.mode===0?validateRules.passwordAddUser:validateRules.password}>
+                        <FormItem label='Password' field='password'
+                                  rules={modalConfig.mode === 0 ? validateRules.passwordAddUser : validateRules.password}>
                             <Input.Password placeholder='Keep with empty'/>
                         </FormItem>}
                         <FormItem
@@ -445,11 +447,13 @@ function UserManager(props) {
                             />
                         </FormItem>
                         <Grid.Row align='center'>
-                            <Grid.Col span={5} align={"center"}>
+                            <Grid.Col span={6} align={"center"}>
+                                {modalConfig.currentUser &&
                                 <Img width={'80%'} style={{borderRadius: '50%'}} alt='avatar' preview={false}
-                                     src={process.env.REACT_APP_BASE_URL + "/files" + "/" + modalConfig.currentUser?.img}/>
+                                     src={process.env.REACT_APP_BASE_URL + "/files" + "/" + modalConfig.currentUser?.img}/>}
+                                <div style={{height: 20}}></div>
                             </Grid.Col>
-                            <Grid.Col span={19}>
+                            <Grid.Col span={18}>
                                 <Upload
                                     style={{width: '100%'}}
                                     listType='picture-card'
@@ -484,6 +488,7 @@ function UserManager(props) {
                                                 title: 'Remove this avatar',
                                                 content: `Remove ${file.name}`,
                                                 onConfirm: () => {
+                                                    fileService.removeFile(file.response.url);
                                                     resolve(true);
                                                     setFileAvatar(null);
                                                 },
@@ -550,7 +555,7 @@ function UserManager(props) {
                                         )}
                                     </div>
                                 </Upload>
-                                <Grid.Row align={"center"} style={{ overflow:'hidden', margin: '10px 0'}}>
+                                <Grid.Row align={"center"} style={{overflow: 'hidden', margin: '10px 0'}}>
                                     <Grid.Col align={"center"} span={24}>
                                         {errorMessage && <Alert type='error' content={errorMessage}/>}
                                     </Grid.Col>

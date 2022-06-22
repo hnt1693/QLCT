@@ -1,0 +1,50 @@
+{
+  "application": {
+    "title": "Awesome app with i18n!",
+    "hello": "Hello, %{name}!"
+  },
+  "page404": {
+    "backToHomePage": "Trở về trang chủ",
+    "pageNotFound": "Truy cập tới trang thất bại. Không tìm thấy trang yêu cầu"
+  },
+  "pageLogin": {
+    "validate": {
+      "username": {
+        "required": "Tên đăng nhập không được trống",
+        "match": "Tên đăng nhập không chưa ký tự đặc biệt"
+      },
+      "password": {
+        "required": "Mật khẩu không được trống"
+      }
+    },
+    "loginButtonText": "Đăng nhập",
+    "placeHolderInputUsername": "Vui lòng nhập tên đăng nhập",
+    "placeHolderInputPassword": "Vui lòng nhập mật khẩu",
+    "errorBadCredential": "Thông tin đăng nhập không đúng"
+  },
+  "header": {
+    "userMenu": {
+      "profile": "Thông tin người dùng",
+      "logout": "Đăng xuất",
+      "login": "Đăng nhập",
+      "setting": "Thiết lập"
+    },
+    "darkMode": {
+      "on": "Chế độ dark mode đang bật",
+      "off": "Chế độ dark mode đang tắt"
+    }
+  },
+  "pageGroups": {
+    "editButton": "Chỉnh sửa",
+    "deleteButton": "Xóa",
+    "viewButton": "Xem danh sách users",
+    "modal": {
+      "titleEdit": "Chỉnh sửa nhóm",
+      "titleAdd": "Thêm nhóm",
+      "groupNameInput": "Tên nhóm",
+      "regexInput": "Regex",
+      "allUsersTransfer":"Tất cả users",
+      "inGroupsUsersTransfer":"Người dùng đã thêm"
+    }
+  }
+}

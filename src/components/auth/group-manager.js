@@ -15,7 +15,7 @@ import {
 import groupService from '../../service/group-service'
 import userService from '../../service/user-service'
 import './group.css'
-
+import {I18n} from 'react-redux-i18n';
 const InputSearch = Input.Search;
 GroupManager.propTypes = {};
 
@@ -166,14 +166,14 @@ function GroupManager(props) {
             width: 250,
             align: 'center',
             render: (key) => <Space>
-                <Tooltip content={"Edit group"}>
+                <Tooltip content={I18n.t("pageGroups.editButton")}>
                     <Button type='primary' status={"success"} size={"small"}
                             icon={<i className="fa-solid fa-marker"></i>}
                             onClick={e => {
                                 getCurrentGroup(key, 1);
                             }}/>
                 </Tooltip>
-                <Tooltip content={"Delete group"}>
+                <Tooltip content={I18n.t("pageGroups.deleteButton")}>
                     <Popconfirm
                         position={"bottom"}
                         title='Are you sure you want to delete?'
@@ -184,7 +184,7 @@ function GroupManager(props) {
                                 icon={<i className="fa-solid fa-trash-can"></i>}/>
                     </Popconfirm>
                 </Tooltip>
-                <Tooltip content={"View users"}>
+                <Tooltip content={I18n.t("pageGroups.viewButton")}>
                     <Button type='primary' status={"default"} size={"small"}
                             icon={<i className="fa-solid fa-people-roof"></i>}
                             onClick={e => getCurrentGroup(key, 2)}/>
@@ -284,8 +284,8 @@ function GroupManager(props) {
                 />
             </Grid.Col>
             <Modal
-                style={{width:600}}
-                title={modalConfig.mode === 0 ? 'Add Group' : 'Edit group'}
+                style={{width: 600}}
+                title={modalConfig.mode === 0 ? I18n.t("pageGroups.modal.titleAdd") : I18n.t("pageGroups.modal.titleEdit")}
                 visible={modalVisible}
                 onOk={submitFormGroup}
                 confirmLoading={loadingModal}
@@ -294,16 +294,16 @@ function GroupManager(props) {
                 <Form
                     {...formItemLayout}
                     form={form}
-                    labelCol={{style: {flexBasis: 90}}}
-                    wrapperCol={{style: {flexBasis: 'calc(100% - 90px)'}}}
+                    // labelCol={{style: {flexBasis: 90}}}
+                    // wrapperCol={{style: {flexBasis: 'calc(100% - 90px)'}}}
                 >
                     <FormItem label='Id' hidden field='key'>
                         <Input placeholder='' hidden/>
                     </FormItem>
-                    <FormItem label='Name' field='groupName' rules={[{required: true}]}>
+                    <FormItem label={I18n.t("pageGroups.modal.groupNameInput")} field='groupName' rules={[{required: true}]}>
                         <Input placeholder=''/>
                     </FormItem>
-                    <FormItem label='Regex' field='regex' rules={[{required: true}]}>
+                    <FormItem label={I18n.t("pageGroups.modal.regexInput")} field='regex' rules={[{required: true}]}>
                         <Input placeholder=''/>
                     </FormItem>
                     <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end", marginTop: 15}}>
@@ -335,7 +335,7 @@ function GroupManager(props) {
                             dataSource={users}
                             searchPlaceholder='Please select'
                             targetKeys={usersInGroup}
-                            titleTexts={['All user', 'User in group']}
+                            titleTexts={[I18n.t("pageGroups.modal.allUsersTransfer"), I18n.t("pageGroups.modal.inGroupsUsersTransfer")]}
                         />
 
                     </div>
@@ -360,10 +360,11 @@ function GroupManager(props) {
                 }}
             >
 
-                {modalConfig.currentGroup?.users.map((u, key) => renderUser(u))}
-                {modalConfig.currentGroup?.users.length>0 && <Divider/>}
-                {modalConfig.currentGroup?.users.length>0 && <div style={{textAlign:"right"}}>
-                    <Typography.Text style={{fontSize:15}} type={"primary"}>Total: {modalConfig.currentGroup?.users.length}</Typography.Text>
+                {modalConfig.currentGroup?.users.map((u, key) => renderUser(u, key))}
+                {modalConfig.currentGroup?.users.length > 0 && <Divider/>}
+                {modalConfig.currentGroup?.users.length > 0 && <div style={{textAlign: "right"}}>
+                    <Typography.Text style={{fontSize: 15}}
+                                     type={"primary"}>Total: {modalConfig.currentGroup?.users.length}</Typography.Text>
                 </div>}
                 {modalConfig.currentGroup?.users.length === 0 && <Empty description={"Không có user nào cả"}/>}
             </Drawer>
@@ -373,8 +374,8 @@ function GroupManager(props) {
 }
 
 
-function renderUser(user) {
-    return <div>
+function renderUser(user, key) {
+    return <div key={key}>
         <Alert
             style={{marginBottom: 5}}
             showIcon={false}

@@ -5,7 +5,6 @@ import userService from '../service/user-service'
 
 const getUser = () => {
     const user = localStorage.getItem("currentUser");
-    console.log(user)
     return user ? JSON.parse(user) : null;
 }
 

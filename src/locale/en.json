@@ -1,0 +1,50 @@
+{
+  "application": {
+    "title": "Awesome app with i18n!",
+    "hello": "Hello, %{name}!"
+  },
+  "page404": {
+    "backToHomePage": "Back to homepage",
+    "pageNotFound": "Access to this page failed. Page not found"
+  },
+  "pageLogin": {
+    "validate": {
+      "username": {
+        "required": "Username can't empty",
+        "match": "Username not contain special characters"
+      },
+      "password": {
+        "required": "Password can't empty"
+      }
+    },
+    "loginButtonText": "Login",
+    "placeHolderInputUsername": "Please enter username",
+    "placeHolderInputPassword": "Please enter password",
+    "errorBadCredential": "Bad credential"
+  },
+  "header": {
+    "userMenu": {
+      "profile": "Profile",
+      "logout": "Logout",
+      "login": "Login",
+      "setting": "Setting"
+    },
+    "darkMode": {
+      "on": "Dark mode on",
+      "off": "Dark mode off"
+    }
+  },
+  "pageGroups": {
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "viewButton": "View users in group",
+    "modal": {
+      "titleEdit": "Edit group",
+      "titleAdd": "Add group",
+      "groupNameInput": "Group name",
+      "regexInput": "Regex",
+      "allUsersTransfer":"All users",
+      "inGroupsUsersTransfer":"Users added"
+    }
+  }
+}

@@ -20,7 +20,7 @@ import {emitLocaleEvent} from "../common/event";
 import {useDispatch, useSelector} from "react-redux";
 import {setDarkMode, setLocale} from "../redux/config-provider-slice";
 import {Link, useNavigate} from "react-router-dom";
-
+import {I18n} from 'react-redux-i18n';
 HeaderLayout.propTypes = {};
 const IMAGE_URL = process.env.REACT_APP_BASE_URL + "/files"
 const locales = [
@@ -30,33 +30,7 @@ const locales = [
     {key: "cn", value: "China", icon: <CN className={"ac"} style={{height: 12}}/>},
 ]
 
-const userMenus = [
-    {
-        key: "/profile",
-        title: "Profile",
-        icon: <i className="fa-solid fa-bell" style={{marginRight: 5}}></i>,
-        requiredLogin: true
-    },
-    {
-        key: "/setting",
-        title: "Setting",
-        icon: <i className="fa-solid fa-gears" style={{marginRight: 5}}></i>,
-        requiredLogin: true
-    },
-    {
-        key: "/logout",
-        title: "Logout",
-        icon: <i className="fa-solid fa-right-from-bracket" style={{color: "red", marginRight: 5}}></i>,
-        requiredLogin: true
-    },
-    {
-        key: "/login",
-        title: "Login",
-        icon: <i className="fa-solid fa-arrow-right-to-bracket" style={{color: "green", marginRight: 5}}></i>,
-        requiredLogin: false,
-        roles: ["ADMIN"]
-    },
-];
+
 
 function HeaderLayout(props) {
     let navigate = useNavigate();
@@ -66,6 +40,34 @@ function HeaderLayout(props) {
     const dispatch = useDispatch();
     const languageMenuRef = useRef();
     const userMenuRef = useRef();
+
+    const userMenus = [
+        {
+            key: "/profile",
+            title: I18n.t("header.userMenu.profile"),
+            icon: <i className="fa-solid fa-bell" style={{marginRight: 5}}></i>,
+            requiredLogin: true
+        },
+        {
+            key: "/setting",
+            title: I18n.t("header.userMenu.setting"),
+            icon: <i className="fa-solid fa-gears" style={{marginRight: 5}}></i>,
+            requiredLogin: true
+        },
+        {
+            key: "/logout",
+            title: I18n.t("header.userMenu.logout"),
+            icon: <i className="fa-solid fa-right-from-bracket" style={{color: "red", marginRight: 5}}></i>,
+            requiredLogin: true
+        },
+        {
+            key: "/login",
+            title: I18n.t("header.userMenu.login"),
+            icon: <i className="fa-solid fa-arrow-right-to-bracket" style={{color: "green", marginRight: 5}}></i>,
+            requiredLogin: false,
+            roles: ["ADMIN"]
+        },
+    ];
 
     const handleLocaleChange = (e) => {
         emitLocaleEvent(e)
@@ -91,7 +93,7 @@ function HeaderLayout(props) {
         </Menu>
 
     const userMenu =
-        <Menu style={{width: 200}} onClickMenuItem={handleUserMenuSelected}>
+        <Menu style={{minWidth: 200}} onClickMenuItem={handleUserMenuSelected}>
             {userMenus.filter(l => {
                 if (currentUser) {
                     return l.requiredLogin
@@ -157,7 +159,7 @@ function HeaderLayout(props) {
                             </Badge>
                         </Popover>}
 
-                        <Tooltip position='br' trigger='hover' content={`Dark mode ${darkMode ? 'on' : 'off'}`}>
+                        <Tooltip position='br' trigger='hover' content={darkMode?I18n.t("header.darkMode.off"):I18n.t("darkMode.on")}>
                             <Switch checkedText={<i className="fa-solid fa-moon"></i>} uncheckedText={<i
                                 className="fa-solid fa-sun"></i>}
                                     onChange={handleChangeDarkMode}/>

@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {useSelector} from "react-redux";
+import {Grid} from "@arco-design/web-react";
 
 Dashboard.propTypes = {
 
@@ -9,7 +9,9 @@ Dashboard.propTypes = {
 function Dashboard(props) {
     const currentUser = useSelector(state => state.user.currentUser)
     return (
-        <div>{JSON.stringify(currentUser)}</div>
+        <Grid.Row justify="center" style={{margin: 10}}>
+            {JSON.stringify(currentUser)}
+        </Grid.Row>
     );
 }
 
