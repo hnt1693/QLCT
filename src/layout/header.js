@@ -19,7 +19,7 @@ import {GB, JP, VN, CN} from 'country-flag-icons/react/3x2'
 import {emitLocaleEvent} from "../common/event";
 import {useDispatch, useSelector} from "react-redux";
 import {setDarkMode, setLocale} from "../redux/config-provider-slice";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, createSearchParams} from "react-router-dom";
 import {I18n} from 'react-redux-i18n';
 
 HeaderLayout.propTypes = {};
@@ -115,7 +115,13 @@ function HeaderLayout(props) {
                 <div className={"notify-item"} key={id}
                      onClick={e => {
                          notifyMenuRef.current.click();
-                         navigate("/notifications?key=" + nt.key, {replace: true})}
+                         navigate({
+                             pathname: "/notifications",
+                             search: createSearchParams({
+                                 key: nt.key
+                             }).toString()
+                         })
+                     }
                      }>
                     <Space direction={"horizontal"} align={"center"}>
                         <Badge status={nt.seen ? 'success' : 'error'}/>
@@ -146,8 +152,9 @@ function HeaderLayout(props) {
             msg: "Message Center is a web-based console that lets you view and manage messages quarantined as spam. Depending on the settings the administrator selects, ...",
             seen: true
         },
-        {key:2,from: 'System', msg: "Please activated this account", seen: false},
-        {key:3,
+        {key: 2, from: 'System', msg: "Please activated this account", seen: false},
+        {
+            key: 3,
             from: 'System',
             msg: "Message Center is a web-based console that lets you view and manage messages quarantined as spam. Depending on the settings the administrator selects, ...",
             seen: false

@@ -16,6 +16,8 @@ function getConfig() {
     }
 }
 
+
+
 const configProvider = createSlice({
     name: 'configProvider',
     initialState: getConfig(),
@@ -40,16 +42,19 @@ const configProvider = createSlice({
             mergerConfigToUser("darkMode", action.payload)
         },
         setConfig: (state, action) => {
-            if (action.payload.darkMode) {
-                document.body.setAttribute('arco-theme', 'dark');
-                document.body.style.backgroundColor = 'rgb(var(--gray-2))'
-            } else {
-                document.body.removeAttribute('arco-theme');
-                document.body.style.backgroundColor = 'white'
+            if(action.payload){
+                if (action.payload.darkMode) {
+                    document.body.setAttribute('arco-theme', 'dark');
+                    document.body.style.backgroundColor = 'rgb(var(--gray-2))'
+                } else {
+                    document.body.removeAttribute('arco-theme');
+                    document.body.style.backgroundColor = 'white'
+                }
+                state.size = action.payload.size;
+                state.locale = action.payload.locale;
+                state.darkMode = action.payload.darkMode;
             }
-            state.size = action.payload.size;
-            state.locale = action.payload.locale;
-            state.darkMode = action.payload.darkMode;
+
         },
     },
 })
