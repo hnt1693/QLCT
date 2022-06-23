@@ -11,8 +11,9 @@ public class JwtResponse {
     private String img;
     private String email;
     private List<String> roles;
+    private String config;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles,String fullName,String img) {
+    public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles,String fullName,String img,String config) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
@@ -20,6 +21,7 @@ public class JwtResponse {
         this.roles = roles;
         this.fullName = fullName;
         this.img = img;
+        this.config = config;
     }
 
     public String getAccessToken() {
@@ -80,5 +82,13 @@ public class JwtResponse {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
     }
 }

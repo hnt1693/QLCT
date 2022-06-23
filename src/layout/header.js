@@ -21,6 +21,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setDarkMode, setLocale} from "../redux/config-provider-slice";
 import {Link, useNavigate} from "react-router-dom";
 import {I18n} from 'react-redux-i18n';
+
 HeaderLayout.propTypes = {};
 const IMAGE_URL = process.env.REACT_APP_BASE_URL + "/files"
 const locales = [
@@ -31,7 +32,6 @@ const locales = [
 ]
 
 
-
 function HeaderLayout(props) {
     let navigate = useNavigate();
     const locale = useSelector(state => state.configProvider.locale);
@@ -40,6 +40,7 @@ function HeaderLayout(props) {
     const dispatch = useDispatch();
     const languageMenuRef = useRef();
     const userMenuRef = useRef();
+    const notifyMenuRef = useRef();
 
     const userMenus = [
         {
@@ -111,7 +112,11 @@ function HeaderLayout(props) {
         return <div style={{width: 300}}>
             <Typography.Title heading={6} style={{paddingLeft: 10}}>Notifications</Typography.Title>
             {notifications.map((nt, id) => (
-                <div className={"notify-item"} key={id}>
+                <div className={"notify-item"} key={id}
+                     onClick={e => {
+                         notifyMenuRef.current.click();
+                         navigate("/notifications?key=" + nt.key, {replace: true})}
+                     }>
                     <Space direction={"horizontal"} align={"center"}>
                         <Badge status={nt.seen ? 'success' : 'error'}/>
                         <Typography.Text className={"notify-from"}>{nt.from}</Typography.Text>
@@ -122,21 +127,27 @@ function HeaderLayout(props) {
                 </div>
 
             ))}
-            <Link to={"/notification"} replace>
-                <Typography.Text type={"primary"} style={{textAlign: "center", display: 'block'}}>View
-                    more</Typography.Text>
-            </Link>
+            <Button type={"primary"} status={"default"} onClick={e => {
+                notifyMenuRef.current.click();
+                navigate("/notifications", {replace: true});
+
+            }}
+                    style={{width: '100%'}}>
+                View more
+            </Button>
+
         </div>
 
     }
     const notis = [
         {
+            key: 1,
             from: 'System',
             msg: "Message Center is a web-based console that lets you view and manage messages quarantined as spam. Depending on the settings the administrator selects, ...",
             seen: true
         },
-        {from: 'System', msg: "Please activated this account", seen: false},
-        {
+        {key:2,from: 'System', msg: "Please activated this account", seen: false},
+        {key:3,
             from: 'System',
             msg: "Message Center is a web-based console that lets you view and manage messages quarantined as spam. Depending on the settings the administrator selects, ...",
             seen: false
@@ -151,30 +162,51 @@ function HeaderLayout(props) {
                 <div className={'header-container'}>
                     <Space>
                         {currentUser &&
-                        <Popover position='br' content={renderNotification(notis)}
-                                 trigger={'click'}>
-                            <Badge count={9} dot dotStyle={{width: 6, height: 6}}>
-                                <Button type='secondary' style={{backgroundColor: 'var(--color-fill-4)'}} shape='circle'
+                        <Popover position='br'
+                                 content={renderNotification(notis)}
+                                 trigger={'click'}
+                        >
+                            <Badge count={9}
+                                   dot
+                                   dotStyle={{width: 6, height: 6}}
+                                   ref={notifyMenuRef}>
+                                <Button type='secondary'
+                                        style={{backgroundColor: 'var(--color-fill-4)'}}
+                                        shape='circle'
                                         icon={<i className="fa-solid fa-bell"></i>}/>
                             </Badge>
                         </Popover>}
 
-                        <Tooltip position='br' trigger='hover' content={darkMode?I18n.t("header.darkMode.off"):I18n.t("header.darkMode.on")}>
-                            <Switch checkedText={<i className="fa-solid fa-moon"></i>} uncheckedText={<i
-                                className="fa-solid fa-sun"></i>}
+                        <Tooltip position='br'
+                                 trigger='hover'
+                                 content={darkMode ? I18n.t("header.darkMode.off") : I18n.t("header.darkMode.on")}>
+                            <Switch checked={darkMode}
+                                    checkedText={<i className="fa-solid fa-moon"></i>}
+                                    uncheckedText={<i className="fa-solid fa-sun"></i>}
                                     onChange={handleChangeDarkMode}/>
                         </Tooltip>
 
-                        <Popover position='br' content={languageMenu} trigger={'click'}>
-                            <Button ref={languageMenuRef} type='secondary' shape='circle'
-                                    style={{backgroundColor: 'var(--color-fill-4)'}}
-                            >{locales.find(l => l.key === locale).icon}</Button>
+                        <Popover position='br'
+                                 content={languageMenu}
+                                 trigger={'click'}>
+                            <Button ref={languageMenuRef}
+                                    type='secondary'
+                                    shape='circle'
+                                    style={{backgroundColor: 'var(--color-fill-4)'}}>
+                                {locales.find(l => l.key === locale).icon}
+                            </Button>
                         </Popover>
 
-
-                        <Popover position='br' content={userMenu} trigger={'click'}>
-                            <Avatar ref={userMenuRef} style={{cursor: "pointer"}}>
-                                <Image width={160} style={{borderRadius: '50%'}} alt='avatar'  preview={false} src={IMAGE_URL + "/" + currentUser?.img}/>
+                        <Popover position='br'
+                                 content={userMenu}
+                                 trigger={'click'}>
+                            <Avatar ref={userMenuRef}
+                                    style={{cursor: "pointer"}}>
+                                <Image width={160}
+                                       style={{borderRadius: '50%'}}
+                                       alt='avatar'
+                                       preview={false}
+                                       src={IMAGE_URL + "/" + currentUser?.img}/>
                             </Avatar>
                         </Popover>
                         {currentUser && <div className={"user-info-container"}>

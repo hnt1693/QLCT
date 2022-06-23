@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Alert, Avatar,
+    Alert, Avatar, Badge,
     Button, Divider, Drawer, Empty,
     Form,
     Grid, Image,
@@ -78,18 +78,14 @@ function GroupManager(props) {
                     }
                     if (res.status === 200) {
                         Notification.success({
-                            title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
-                            content: 'Successfully!'
+                            title: modalConfig.mode === 0 ? I18n.t("pageGroups.modal.titleAdd") : I18n.t("pageGroups.modal.titleEdit"),
+                            content: modalConfig.mode === 0?I18n.t("pageGroups.notify.createSuccess"):I18n.t("pageGroups.notify.editSuccess")
                         });
-                        getGroups(null);
+                        getGroups(pagination);
                         setAddGroupVisible(false);
                     }
                 } catch (e) {
                     setErrorMessage(I18n.t("errorCode." + e.response.data.details))
-                    // Notification.error({
-                    //     title: modalConfig.mode === 0 ? 'Add group' : 'Edit group',
-                    //     content: 'Failed!'
-                    // });
                 } finally {
                     setLoadingAddGroupModal(false);
                 }
@@ -138,7 +134,6 @@ function GroupManager(props) {
             const res = await groupService.getById(key);
             if (res.status === 200) {
                 setModalConfig({mode: mode, currentGroup: res.data.data})
-
             }
         } catch (e) {
 
@@ -150,12 +145,11 @@ function GroupManager(props) {
             setLoadingGroups(true);
             const res = await groupService.deletes([id]);
             if (res.status === 200) {
-                getGroups(null);
-                Notification.success({title: 'Delete group', content: 'Deleted!'})
+                getGroups(pagination);
+                Notification.success({title: I18n.t("pageGroups.titleDelete"), content: I18n.t("pageGroups.notify.deleteSuccess")})
             }
         } catch (e) {
             Notification.error({title: 'Delete group', content: 'Failed!'})
-            console.log(e)
         } finally {
             setLoadingGroups(false);
         }
@@ -261,7 +255,12 @@ function GroupManager(props) {
                     />
                     <Space style={{flex: 1}}>
                         {
-                            selectedRowKeys.length > 0 && <Button size='default'>Delete</Button>
+                            selectedRowKeys.length > 0 &&
+                            <Badge count={selectedRowKeys.length} maxCount={999}>
+                                <Button size='default' onClick={e=>alert("Remove all")}>Delete</Button>
+                            </Badge>
+
+
                         }
                         <Button size='default' type={"primary"}
                                 onClick={e => setModalConfig({mode: 0, currentGroup: null})}
@@ -347,7 +346,7 @@ function GroupManager(props) {
                             pagination
                             showSearch
                             dataSource={users}
-                            searchPlaceholder='Please select'
+                            searchPlaceholder={I18n.t("pageGroups.placeHolderSearchByName")}
                             targetKeys={usersInGroup}
                             titleTexts={[I18n.t("pageGroups.modal.allUsersTransfer"), I18n.t("pageGroups.modal.inGroupsUsersTransfer")]}
                         />
@@ -381,7 +380,7 @@ function GroupManager(props) {
                                      type={"primary"}>{I18n.t("pageGroups.total")}: {modalConfig.currentGroup?.users.length} &nbsp;   &nbsp;
                         <i className="fa-solid fa-user-large"></i></Typography.Text>
                 </div>}
-                {modalConfig.currentGroup?.users.length === 0 && <Empty description={"Không có user nào cả"}/>}
+                {modalConfig.currentGroup?.users.length === 0 && <Empty />}
             </Drawer>
         </Grid.Row>
     );

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.nta.teabreakorder.service.AuthService;
+import com.nta.teabreakorder.service.UserService;
 import com.nta.teabreakorder.service.impl.GmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,10 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -59,11 +64,12 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles, userDetails.getFullName(), userDetails.getImg()));
+                roles, userDetails.getFullName(), userDetails.getImg(),userDetails.getConfig()));
     }
 
     @PostMapping("/signup" )

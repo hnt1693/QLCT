@@ -26,6 +26,10 @@ const getInfo = () => {
     return axios.get(API_URL + "info");
 };
 
+const updateConfig = (config) => {
+    return axios.put(API_URL + "update-config", null, {params: {config: config}});
+};
+
 const deletes = (ids) => {
     return axios({
         url: API_URL + "",
@@ -37,5 +41,5 @@ const deletes = (ids) => {
 
 export default {
     getAllUsers, getAllPagination, create, update, deletes,
-    getById, getInfo
+    getById, getInfo, updateConfig
 };

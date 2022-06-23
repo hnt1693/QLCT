@@ -14,10 +14,12 @@ import com.nta.teabreakorder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                roles, user.getFullName(), user.getImg()));
+                roles, user.getFullName(), user.getImg(),userDetails.getConfig()));
     }
 
     @Override
@@ -76,6 +78,15 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         users.forEach(u -> u.setGroups(null));
         return CommonUtil.createResponseEntityOK(users);
+    }
+
+    @Override
+    public ResponseEntity updateConfig(String config) throws Exception {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new Exception("Not found"));
+        user.setConfig(config);
+        userRepository.save(user);
+        return CommonUtil.createResponseEntityOK(user);
     }
 
     @Override
@@ -96,14 +107,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity update(User user) throws Exception {
         User oldUser = userRepository.getById(user.getId());
-        if(user.getGroups()!=null && !user.getGroups().isEmpty()){
-            List<Long>ids = new ArrayList<>();
+        if (user.getGroups() != null && !user.getGroups().isEmpty()) {
+            List<Long> ids = new ArrayList<>();
             for (Group group : user.getGroups()) {
                 ids.add(group.getId());
             }
             oldUser.setGroups(groupRepository.findAllById(ids));
         }
-        if(user.getPassword()!=null){
+        if (user.getPassword() != null) {
             oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         oldUser.setUsername(user.getUsername());

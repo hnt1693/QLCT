@@ -125,8 +125,12 @@ public class UserController {
         return userService.getInfo();
     }
 
-
-
+    @PutMapping("/update-config")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity updateConfig(@RequestParam String config)
+            throws Exception {
+        return userService.updateConfig(config);
+    }
 
     @DeleteMapping("")
     @PreAuthorize("hasRole('MODERATOR')")

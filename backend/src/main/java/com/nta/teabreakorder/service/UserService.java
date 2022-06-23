@@ -15,4 +15,6 @@ public interface UserService extends CommonService<User>{
 
     ResponseEntity getAll() throws Exception;
 
+    ResponseEntity updateConfig(String config) throws Exception;
+
 }

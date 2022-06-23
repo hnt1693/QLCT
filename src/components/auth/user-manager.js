@@ -11,7 +11,7 @@ import {
     Table,
     Tooltip,
     Upload,
-    Notification, Select, Image as Img, Alert
+    Notification, Select, Image as Img, Alert, Badge
 } from '@arco-design/web-react';
 import userService from "../../service/user-service";
 import authService from "../../service/auth-service";
@@ -152,7 +152,7 @@ function UserManager(props) {
             dataIndex: 'email',
             // width: 250
         }, {
-            width: 300,
+            width: 400,
             title: 'Roles',
             dataIndex: 'groups',
             render: (roles) =>
@@ -359,14 +359,12 @@ function UserManager(props) {
                         searchButton
                         onSearch={event => getUsers({...pagination, search: {username: event}})}
                     />
-                    {selectedRowKeys.length > 0 && <Space style={{flex: 1}}>
-                        <span>Selected {selectedRowKeys.length}</span>
-                        <Button size='small'>Save</Button>
-                        <Button size='small'>Delete</Button>
-                    </Space>}
+
                     <Space style={{flex: 1}}>
                         {
-                            selectedRowKeys.length > 0 && <Button size='default'>Delete</Button>
+                            selectedRowKeys.length > 0 && <Badge count={selectedRowKeys.length} maxCount={999}>
+                                <Button size='default' onClick={e=>alert("Remove all")}>Delete</Button>
+                            </Badge>
                         }
                         <Button size='default' type={"primary"}
                                 onClick={e => setModalConfig({mode: 0, currentUser: null})}
@@ -563,41 +561,9 @@ function UserManager(props) {
 
                                 </Grid.Row>
                             </Grid.Col>
-
                         </Grid.Row>
 
-                        {/*<div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end", marginTop: 15}}>*/}
-                        {/*    <Transfer*/}
-                        {/*        onChange={(newTargetKeys, direction, moveKeys) => {*/}
-                        {/*            switch (direction) {*/}
-                        {/*                case "target": {*/}
-                        {/*                    if (newTargetKeys.length > 0) {*/}
-                        {/*                        let temp = [...usersInGroup];*/}
-                        {/*                        newTargetKeys.forEach(key => temp.push(key))*/}
-                        {/*                        setUsersInGroup(temp)*/}
-                        {/*                    }*/}
-                        {/*                    break;*/}
-                        {/*                }*/}
-                        {/*                case "source": {*/}
-                        {/*                    if (moveKeys.length > 0) {*/}
-                        {/*                        let temp = [...usersInGroup];*/}
-                        {/*                        moveKeys.forEach(key => {*/}
-                        {/*                            temp.splice(temp.indexOf(key), 1);*/}
-                        {/*                        })*/}
-                        {/*                        setUsersInGroup(temp)*/}
-                        {/*                    }*/}
-                        {/*                    break;*/}
-                        {/*                }*/}
-                        {/*            }*/}
-                        {/*        }}*/}
-                        {/*        pagination*/}
-                        {/*        showSearch*/}
-                        {/*        dataSource={users}*/}
-                        {/*        searchPlaceholder='Please select'*/}
-                        {/*        targetKeys={usersInGroup}*/}
-                        {/*        titleTexts={['All user', 'User in group']}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
+
                     </Form>
                 </Modal>
             </Grid.Col>

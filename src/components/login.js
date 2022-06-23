@@ -7,6 +7,7 @@ import {setUser} from "../redux/user-slice";
 import Loading from "./loading";
 import authService from '../service/auth-service'
 import {I18n} from 'react-redux-i18n';
+import {setConfig} from "../redux/config-provider-slice";
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group
 
@@ -38,7 +39,7 @@ function Login(props) {
                     setLoading(false)
                     dispatch(setUser(res.data));
                     setErrorMessage(null)
-                    Notification.success({title: 'LOGIN', content: 'This is a success Notification!'});
+                    Notification.success({title: I18n.t("pageLogin.notify.loginTitle"), content: I18n.t("pageLogin.notify.loginSuccessMsg")});
                 }, 3000)
             }
         } catch (e) {

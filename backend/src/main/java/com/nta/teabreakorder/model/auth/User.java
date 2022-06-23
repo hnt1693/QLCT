@@ -57,6 +57,9 @@ public class User {
     @JsonProperty("isDeleted" )
     private boolean isDeleted = false;
 
+    @Column(name="config")
+    private String config;
+
     public User() {
     }
 
@@ -129,5 +132,13 @@ public class User {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
     }
 }

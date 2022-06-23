@@ -2,6 +2,8 @@ import MenuManager from "../components/ui/menu-manager";
 import GroupManager from "../components/auth/group-manager";
 import UserManager from "../components/auth/user-manager";
 import Dashboard from "../components/dashboard";
+import Notification from "../components/ui/notification";
+
 
 
 const routes = {
@@ -9,6 +11,7 @@ const routes = {
     groups: <GroupManager/>,
     users: <UserManager/>,
     dashboard: <Dashboard/>,
+    notifications: <Notification/>,
 }
 
 const combineRoute = (backendRoutes) => {

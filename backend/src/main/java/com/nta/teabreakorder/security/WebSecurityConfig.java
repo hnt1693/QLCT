@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/auth/**").permitAll()	//cho phép tất cả mọi người truy cập đường dẫn này
-                .antMatchers("/test/**","/files/**").permitAll()
+                .antMatchers("/ui/menus/**","/files/**").permitAll()
                 .antMatchers("/orders/**").permitAll()
                 .anyRequest().authenticated();	//tất cả các request khác phải xác thực mới được truy cập
         //.permit() cho phép	.authenticated() cấm hoặc yêu câu xác thực

@@ -18,6 +18,10 @@
       }
     },
     "loginButtonText": "Đăng nhập",
+    "notify": {
+      "loginTitle": "Đăng nhập",
+      "loginSuccessMsg": "Đăng nhập thành công"
+    },
     "placeHolderInputUsername": "Vui lòng nhập tên đăng nhập",
     "placeHolderInputPassword": "Vui lòng nhập mật khẩu",
     "errorBadCredential": "Thông tin đăng nhập không đúng"
@@ -53,16 +57,25 @@
       "titleAdd": "Thêm nhóm",
       "groupNameInput": "Tên nhóm",
       "regexInput": "Regex",
-      "allUsersTransfer":"Tất cả users",
-      "inGroupsUsersTransfer":"Người dùng đã thêm"
+      "allUsersTransfer": "Tất cả users",
+      "inGroupsUsersTransfer": "Người dùng đã thêm"
     },
+    "titleDelete": "Xóa nhóm",
     "total": "Tổng",
-    "placeHolderSearch": "Tìm kiếm theo tên nhóm"
+    "placeHolderSearch": "Tìm kiếm theo tên nhóm",
+    "notify": {
+      "deleteSuccess": "Xóa nhóm thành công",
+      "deleteFail": "Xóa nhóm thành công",
+      "createSuccess": "Tạo nhóm thành công",
+      "editSuccess": "Chỉnh sửa nhóm thành công"
+    },
+    "placeHolderSearchByName": "Tìm kiếm bằng tên"
+  },
+  "pageUsers": {
   },
   "errorCode": {
     "US01": "Username đã có người sử dụng",
     "US02": "Email đã có người sử dụng",
-
     "GR01": "Regex đã được sủ dụng"
   }
 }

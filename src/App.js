@@ -18,7 +18,10 @@ import menuService from './service/menu-service'
 import {combineRoutes} from "./common/routes";
 import Component404 from "./components/ui/component404";
 import {getUserInfo} from "./redux/user-slice";
-import {setLocale,I18n} from 'react-redux-i18n';
+import {setLocale, I18n} from 'react-redux-i18n';
+import userService from './service/user-service'
+import {setConfig} from "./redux/config-provider-slice";
+
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
@@ -50,6 +53,13 @@ function App() {
 
     const renderMenuItem = (item) => {
         if (!item.activated) return;
+
+        if(item.roles.length>0){
+            const intersection = item?.roles.filter(val => currentUser?.roles.includes(val));
+            if(intersection.length===0) return ;
+        }
+
+
         return item.children.length > 0 ? <SubMenu
             key={item.path}
             title={
@@ -74,21 +84,29 @@ function App() {
     }
 
     useEffect(() => {
+        loadMenu();
         if (currentUser) {
             getUserInfoApp();
-            loadMenu();
         }
     }, [])
 
     useEffect(()=>{
-        if(configProvider.locale){
+        if(currentUser){
+            dispatch(setConfig(currentUser.config))
+        }
+
+    },[currentUser])
+
+
+    useEffect(() => {
+        if (configProvider.locale) {
             dispatch(setLocale(configProvider.locale));
         }
-    },[configProvider])
+        if (configProvider && currentUser) {
+            userService.updateConfig(configProvider);
+        }
+    }, [configProvider])
 
-    useEffect(()=>{
-        console.log(i18n)
-    },[i18n])
 
     const getUserInfoApp = async () => {
         dispatch(getUserInfo());
@@ -96,7 +114,7 @@ function App() {
 
     useEffect(() => {
         if (currentUser) {
-            navigate(location.pathname !== "/logout" && location.pathname !== "/login" ? location.pathname : "/", {replace: true})
+            navigate(location.pathname !== "/logout" && location.pathname !== "/login" ? location.pathname : "/dashboard", {replace: true})
         }
     }, [currentUser]);
 
@@ -104,8 +122,9 @@ function App() {
     const navigateTo = (key) => {
         navigate(key, {replace: true})
     }
+    
     return (
-        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size} >
+        <ConfigProvider locale={localeObject[configProvider.locale]} size={configProvider.size}>
             <Layout className='main-layout'>
                 <Header>
                     <div className={"header-container"}>
@@ -148,8 +167,6 @@ function App() {
                         </Footer>
                     </Layout>
                 </Layout> : <Login/>}
-
-
             </Layout>
         </ConfigProvider>
     );

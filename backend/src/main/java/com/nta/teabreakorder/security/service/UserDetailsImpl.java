@@ -30,7 +30,9 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities, String fullName, String img) {
+    private String config;
+
+    public UserDetailsImpl(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities, String fullName, String img, String config) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -38,6 +40,7 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
         this.fullName = fullName;
         this.img = img;
+        this.config = config;
     }
 
     public static UserDetailsImpl build(User user) {
@@ -52,7 +55,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 authorities,
                 user.getFullName(),
-                user.getImg());
+                user.getImg(), user.getConfig());
     }
 
     @Override
@@ -122,5 +125,13 @@ public class UserDetailsImpl implements UserDetails {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getConfig() {
+        return config;
+    }
+
+    public void setConfig(String config) {
+        this.config = config;
     }
 }

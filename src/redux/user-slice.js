@@ -1,6 +1,4 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {Axios as axios} from "axios";
-import authService from '../service/auth-service'
 import userService from '../service/user-service'
 
 const getUser = () => {
@@ -29,6 +27,7 @@ const userSlice = createSlice({
         setUser: (state, action) => {
             state.currentUser = action.payload;
             if (action.payload) {
+                action.payload.config = JSON.parse(action.payload.config);
                 localStorage.setItem("currentUser", JSON.stringify(action.payload))
             } else {
                 localStorage.removeItem("currentUser")
@@ -39,6 +38,7 @@ const userSlice = createSlice({
         [getUserInfo.fulfilled]: (state, action) => {
             state.currentUser = action.payload;
             if (action.payload) {
+                action.payload.config = JSON.parse(action.payload.config);
                 localStorage.setItem("currentUser", JSON.stringify(action.payload))
             } else {
                 localStorage.removeItem("currentUser")
