@@ -42,3 +42,16 @@
     border-radius: 5px;
 
 }
+
+
+
+.notify-popover .notify-title{
+    background-color: rgb(var(--primary-6));
+}
+.notify-popover .arco-popover-content{
+    padding: 0!important;
+}
+
+.notify-popover .arco-popover-arrow{
+    background-color: rgb(var(--primary-6)) !important;
+}

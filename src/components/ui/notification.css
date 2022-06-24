@@ -1,0 +1,75 @@
+.msg-item {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 75px;
+    min-height: 75px;
+    justify-content: flex-start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.msg-item .msg-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 5px;
+    transition: all 300ms;
+}
+
+/*.arco-card-body{*/
+/*    padding: 5px 10px !important;*/
+/*}*/
+
+.msg-action {
+    width: 100px;
+    height: 75px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    right: -100px;
+    transition: all 300ms;
+    /*background-color: #f6f6f6;*/
+    justify-content: center;
+}
+
+.msg-container {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+
+}
+
+.msg-container:hover .msg-action {
+    right: 0 !important;
+}
+
+/*.msg-container:hover .msg-title {*/
+/*    width: calc(100% - 100px);*/
+/*}*/
+
+.msg-activated{
+    background-color:  var(--color-primary-light-1);
+}
+
+.arco-card-body {
+    padding: 0 !important;
+}
+
+
+.notify-pagination{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

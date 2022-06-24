@@ -1,5 +1,6 @@
 import React, {useRef} from 'react';
 import {
+    Alert,
     Badge,
     Button,
     Image,
@@ -7,7 +8,7 @@ import {
     PageHeader,
     Popover,
     Space,
-    Switch,
+    Switch, Tag,
     Tooltip,
     Typography
 } from "@arco-design/web-react";
@@ -110,7 +111,21 @@ function HeaderLayout(props) {
 
     const renderNotification = (notifications) => {
         return <div style={{width: 300}}>
-            <Typography.Title heading={6} style={{paddingLeft: 10}}>Notifications</Typography.Title>
+
+            <Typography.Title heading={6}
+                              className={"notify-title"}
+                              style={{padding: 10, margin: 0, color: "white"}}
+            >
+                <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+                    Notifications
+                    <Tag color='rgb(181 65 29)' style={{marginLeft: 10}}>
+                        50+
+                    </Tag>
+                </div>
+
+
+            </Typography.Title>
+
             {notifications.map((nt, id) => (
                 <div className={"notify-item"} key={id}
                      onClick={e => {
@@ -125,7 +140,7 @@ function HeaderLayout(props) {
                      }>
                     <Space direction={"horizontal"} align={"center"}>
                         <Badge status={nt.seen ? 'success' : 'error'}/>
-                        <Typography.Text className={"notify-from"}>{nt.from}</Typography.Text>
+                        <Typography.Text className={"notify-from"} style={{fontWeight:600}}>{nt.from}</Typography.Text>
                     </Space>
                     <Typography.Text className={"notify-msg"}>{nt.msg}</Typography.Text>
                     <Typography.Text type={"primary"} style={{fontSize: 12, textAlign: "right"}}>09:00:12
@@ -133,11 +148,14 @@ function HeaderLayout(props) {
                 </div>
 
             ))}
-            <Button type={"primary"} status={"default"} onClick={e => {
-                notifyMenuRef.current.click();
-                navigate("/notifications", {replace: true});
+            <Button type={"primary"}
+                    status={"default"}
+                    size={"large"}
+                    onClick={e => {
+                        notifyMenuRef.current.click();
+                        navigate("/notifications", {replace: true});
 
-            }}
+                    }}
                     style={{width: '100%'}}>
                 View more
             </Button>
@@ -169,7 +187,7 @@ function HeaderLayout(props) {
                 <div className={'header-container'}>
                     <Space>
                         {currentUser &&
-                        <Popover position='br'
+                        <Popover position='br' className={"notify-popover"}
                                  content={renderNotification(notis)}
                                  trigger={'click'}
                         >

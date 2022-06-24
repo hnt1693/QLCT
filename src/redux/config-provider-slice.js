@@ -33,7 +33,8 @@ const configProvider = createSlice({
         setDarkMode: (state, action) => {
             if (action.payload) {
                 document.body.setAttribute('arco-theme', 'dark');
-                document.body.style.backgroundColor = 'rgb(var(--gray-2))'
+                // document.body.style.backgroundColor = 'rgb(var(--gray-2))'
+                document.body.style.backgroundColor = '#17171a'
             } else {
                 document.body.removeAttribute('arco-theme');
                 document.body.style.backgroundColor = 'white'
